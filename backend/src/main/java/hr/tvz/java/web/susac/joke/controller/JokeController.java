@@ -6,12 +6,14 @@ import hr.tvz.java.web.susac.joke.service.JokeService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 
@@ -52,8 +54,9 @@ public class JokeController {
         return new ResponseEntity<>(jokeDTOList, HttpStatus.OK);
     }
 
+    @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @PostMapping
-    public ResponseEntity<?> save(@Valid @RequestBody JokeDTO jokeDTO, Errors errors){
+    public ResponseEntity<?> save(@Valid @RequestBody JokeDTO jokeDTO, Errors errors, Principal principal){
         if(errors.hasErrors()){
             String error = "";
             List<FieldError> errorsList = errors.getFieldErrors();
@@ -67,6 +70,7 @@ public class JokeController {
         }
 
         try{
+            jokeDTO.setUser(principal.getName());
             jokeDTO = jokeService.save(jokeDTO);
         }
         catch(Exception e){
@@ -76,12 +80,13 @@ public class JokeController {
         return new ResponseEntity<>(jokeDTO, HttpStatus.CREATED);
     }
 
+    @Secured("ROLE_ADMIN")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateById(@PathVariable Integer id, @Valid @RequestBody JokeDTO updateDTO, Errors errors){
         JokeDTO jokeDTO = jokeService.findOneById(id);
 
         if(Objects.isNull(jokeDTO))
-            return new ResponseEntity<>("Selected Joke Cdoes not exists!", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Selected Joke does not exists!", HttpStatus.NOT_FOUND);
 
         if(errors.hasErrors()){
             String error = "";
@@ -107,6 +112,7 @@ public class JokeController {
         return new ResponseEntity<>(updateDTO, HttpStatus.OK);
     }
 
+    @Secured("ROLE_ADMIN")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@PathVariable Integer id){
         JokeDTO jokeDTO = jokeService.findOneById(id);

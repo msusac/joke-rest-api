@@ -25,6 +25,7 @@ public class Category {
     private String name;
 
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Joke> jokeList = new ArrayList<>();
 

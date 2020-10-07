@@ -7,6 +7,7 @@ import hr.tvz.java.web.susac.joke.service.JokeService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
@@ -57,6 +58,7 @@ public class CategoryController {
         return new ResponseEntity<>(jokeDTOList, HttpStatus.OK);
     }
 
+    @Secured("ROLE_ADMIN")
     @PostMapping
     public ResponseEntity<?> save(@Valid @RequestBody CategoryDTO categoryDTO, Errors errors){
         if(errors.hasErrors()){
@@ -87,6 +89,7 @@ public class CategoryController {
         return new ResponseEntity<>(categoryDTO, HttpStatus.CREATED);
     }
 
+    @Secured("ROLE_ADMIN")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateById(@PathVariable Integer id, @Valid @RequestBody CategoryDTO updateDTO, Errors errors){
         CategoryDTO categoryDTO = categoryService.findOneById(id);
@@ -123,6 +126,7 @@ public class CategoryController {
         return new ResponseEntity<>(updateDTO, HttpStatus.OK);
     }
 
+    @Secured("ROLE_ADMIN")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@PathVariable Integer id){
         CategoryDTO categoryDTO = categoryService.findOneById(id);

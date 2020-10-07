@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.transaction.Transactional;
@@ -81,6 +82,7 @@ public class CategoryControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
     @Order(5)
     public void save() throws Exception{
         CategoryDTO categoryDTO = new CategoryDTO();
@@ -101,6 +103,7 @@ public class CategoryControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
     @Order(6)
     public void save_FailedValidation() throws Exception{
         CategoryDTO categoryDTO = new CategoryDTO();
@@ -116,6 +119,7 @@ public class CategoryControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
     @Order(7)
     public void save_ExistingCategory() throws Exception{
         CategoryDTO categoryDTO = new CategoryDTO();
@@ -131,6 +135,7 @@ public class CategoryControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
     @Order(8)
     public void update() throws Exception{
         CategoryDTO categoryDTO = new CategoryDTO();
@@ -152,6 +157,7 @@ public class CategoryControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
     @Order(9)
     public void update_FailedValidation() throws Exception{
         CategoryDTO categoryDTO = new CategoryDTO();
@@ -167,6 +173,7 @@ public class CategoryControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
     @Order(10)
     public void update_ExistingCategory() throws Exception{
         CategoryDTO categoryDTO = new CategoryDTO();
@@ -182,6 +189,7 @@ public class CategoryControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
     @Order(11)
     public void update_NotFound() throws Exception{
         CategoryDTO categoryDTO = new CategoryDTO();
@@ -197,6 +205,7 @@ public class CategoryControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
     @Order(12)
     public void deleteById() throws Exception{
         this.mockMvc.perform(

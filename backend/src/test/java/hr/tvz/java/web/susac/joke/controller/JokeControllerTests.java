@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.transaction.Transactional;
@@ -32,9 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class JokeControllerTests {
-
-    @Autowired
-    private CategoryService categoryService;
 
     @Autowired
     private JokeService jokeService;
@@ -96,6 +94,7 @@ public class JokeControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
     @Order(5)
     public void save_NewCategory() throws Exception{
         JokeDTO jokeDTO = new JokeDTO();
@@ -116,6 +115,7 @@ public class JokeControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "userone", authorities = "ROLE_USER")
     @Order(6)
     public void save_ExistingCategory() throws Exception{
         JokeDTO jokeDTO = new JokeDTO();
@@ -136,6 +136,7 @@ public class JokeControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "userone", authorities = "ROLE_USER")
     @Order(7)
     public void save_FailedValidation() throws Exception{
         JokeDTO jokeDTO = new JokeDTO();
@@ -151,6 +152,7 @@ public class JokeControllerTests {
 
 
     @Test
+    @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
     @Order(8)
     public void update_NewCategory() throws Exception{
         JokeDTO jokeDTO = new JokeDTO();
@@ -173,6 +175,7 @@ public class JokeControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
     @Order(9)
     public void update_ExistingCategory() throws Exception{
         JokeDTO jokeDTO = new JokeDTO();
@@ -195,6 +198,7 @@ public class JokeControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
     @Order(10)
     public void update_FailedValidation() throws Exception{
         JokeDTO jokeDTO = new JokeDTO();
@@ -209,6 +213,7 @@ public class JokeControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
     @Order(11)
     public void update_NotFound() throws Exception{
         JokeDTO jokeDTO = new JokeDTO();
@@ -223,6 +228,7 @@ public class JokeControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
     @Order(12)
     public void deleteById() throws Exception{
         this.mockMvc.perform(
