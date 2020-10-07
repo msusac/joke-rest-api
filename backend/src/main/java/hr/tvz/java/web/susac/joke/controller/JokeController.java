@@ -81,7 +81,7 @@ public class JokeController {
         JokeDTO jokeDTO = jokeService.findOneById(id);
 
         if(Objects.isNull(jokeDTO))
-            return new ResponseEntity<>("Selected Joke Cdoes not exists!", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Selected Joke does not exists!", HttpStatus.NOT_FOUND);
 
         if(errors.hasErrors()){
             String error = "";

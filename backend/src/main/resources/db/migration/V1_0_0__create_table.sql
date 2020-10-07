@@ -14,3 +14,6 @@ create table joke_table (
     category_id integer not null,
     constraint fk_category foreign key (category_id) references category_table
 );
+
+alter sequence category_table_id_seq RESTART WITH 1;
+alter sequence joke_table_id_seq RESTART WITH 1;
