@@ -19,13 +19,20 @@ public class Joke {
     @Column(name = "id", unique = true, nullable = false)
     private Integer id;
 
-    @Column(name = "description", unique = true, nullable = false)
+    @Column(name = "description", nullable = false)
     private String description;
 
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @CreationTimestamp
     @Column(name = "date_time_created", nullable = false)

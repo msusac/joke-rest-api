@@ -4,8 +4,10 @@ import hr.tvz.java.web.susac.joke.dto.JokeDTO;
 import hr.tvz.java.web.susac.joke.dto.CategorySearchDTO;
 import hr.tvz.java.web.susac.joke.model.Category;
 import hr.tvz.java.web.susac.joke.model.Joke;
+import hr.tvz.java.web.susac.joke.model.User;
 import hr.tvz.java.web.susac.joke.repository.CategoryRepository;
 import hr.tvz.java.web.susac.joke.repository.JokeRepository;
+import hr.tvz.java.web.susac.joke.repository.UserRepository;
 import hr.tvz.java.web.susac.joke.service.JokeService;
 import hr.tvz.java.web.susac.joke.util.converter.ConverterUtil;
 import lombok.AllArgsConstructor;
@@ -23,6 +25,7 @@ public class JokeServiceImpl implements JokeService {
 
     private final CategoryRepository categoryRepository;
     private final JokeRepository jokeRepository;
+    private final UserRepository userRepository;
     private final ConverterUtil<Joke, JokeDTO> converter;
 
     @Override
@@ -61,7 +64,6 @@ public class JokeServiceImpl implements JokeService {
     @Override
     public JokeDTO save(JokeDTO jokeDTO) {
         Joke joke = converter.convertToEntity(jokeDTO);
-
         Category category = categoryRepository.findOneByName(jokeDTO.getCategory());
 
         if(Objects.isNull(category)){
@@ -71,6 +73,15 @@ public class JokeServiceImpl implements JokeService {
             categoryRepository.save(category);
 
             category = categoryRepository.findOneByName(jokeDTO.getCategory());
+        }
+
+        if(Objects.isNull(joke.getId())) {
+            User user = userRepository.findOneByUsername(jokeDTO.getUser()).get();
+            joke.setUser(user);
+        }
+        else{
+            Joke existingJoke = jokeRepository.findOneById(joke.getId());
+            joke.setUser(existingJoke.getUser());
         }
 
         joke.setCategory(category);

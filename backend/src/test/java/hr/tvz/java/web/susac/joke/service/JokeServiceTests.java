@@ -70,6 +70,7 @@ public class JokeServiceTests {
         JokeDTO jokeDTO = new JokeDTO();
         jokeDTO.setCategory("New Joke");
         jokeDTO.setDescription("C++");
+        jokeDTO.setUser("admin");
 
         jokeService.save(jokeDTO);
 
@@ -86,6 +87,7 @@ public class JokeServiceTests {
         JokeDTO jokeDTO = new JokeDTO();
         jokeDTO.setCategory("Programming");
         jokeDTO.setDescription("C++");
+        jokeDTO.setUser("admin");
 
         jokeService.save(jokeDTO);
 

@@ -2,6 +2,7 @@ package hr.tvz.java.web.susac.joke.repository;
 
 import hr.tvz.java.web.susac.joke.model.Category;
 import hr.tvz.java.web.susac.joke.model.Joke;
+import hr.tvz.java.web.susac.joke.model.User;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,9 @@ public class JokeRepositoryTests {
 
     @Autowired
     private JokeRepository jokeRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     @Order(1)
@@ -69,10 +73,12 @@ public class JokeRepositoryTests {
     @Order(5)
     public void save(){
         Category category = categoryRepository.findOneByName("Programming");
+        User user = userRepository.findOneByUsername("userone").get();
 
         Joke joke = new Joke();
         joke.setDescription("C++");
         joke.setCategory(category);
+        joke.setUser(user);
 
         jokeRepository.save(joke);
 
