@@ -1,5 +1,7 @@
 package hr.tvz.java.web.susac.joke.repository;
 
+import hr.tvz.java.web.susac.joke.configuration.SchedulerConfig;
+import hr.tvz.java.web.susac.joke.jobs.VerificationJob;
 import hr.tvz.java.web.susac.joke.model.Category;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -7,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.TestPropertySource;
 
 import javax.transaction.Transactional;
 
@@ -16,6 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
+@MockBean({SchedulerConfig.class, VerificationJob.class})
+@TestPropertySource(locations = "classpath:application-test.properties")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CategoryRepositoryTests {
 
@@ -67,11 +73,11 @@ public class CategoryRepositoryTests {
     @Test
     @Order(5)
     public void deleteById(){
-        Category category = categoryRepository.findOneById(1);
+        Category category = categoryRepository.findOneByName("Chuck Norris");
 
         categoryRepository.deleteById(category.getId());
 
-        category = categoryRepository.findOneById(1);
+        category = categoryRepository.findOneByName("Chuck Norris");
 
         assertNull(category);
     }

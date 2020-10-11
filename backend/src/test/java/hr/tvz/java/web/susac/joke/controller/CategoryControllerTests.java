@@ -1,6 +1,7 @@
 package hr.tvz.java.web.susac.joke.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hr.tvz.java.web.susac.joke.configuration.SchedulerConfig;
 import hr.tvz.java.web.susac.joke.dto.CategoryDTO;
 import hr.tvz.java.web.susac.joke.service.CategoryService;
 import org.junit.jupiter.api.MethodOrderer;
@@ -10,8 +11,10 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.transaction.Transactional;
@@ -24,6 +27,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
+@MockBean(SchedulerConfig.class)
+@TestPropertySource(locations = "classpath:application-test.properties")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CategoryControllerTests {
 
@@ -31,10 +36,10 @@ public class CategoryControllerTests {
     private CategoryService categoryService;
 
     @Autowired
-    private ObjectMapper mapper;
+    private MockMvc mockMvc;
 
     @Autowired
-    private MockMvc mockMvc;
+    private ObjectMapper mapper;
 
     @Test
     @Order(1)

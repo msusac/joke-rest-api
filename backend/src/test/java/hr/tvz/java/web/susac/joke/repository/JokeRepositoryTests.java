@@ -1,5 +1,7 @@
 package hr.tvz.java.web.susac.joke.repository;
 
+import hr.tvz.java.web.susac.joke.configuration.SchedulerConfig;
+import hr.tvz.java.web.susac.joke.jobs.VerificationJob;
 import hr.tvz.java.web.susac.joke.model.Category;
 import hr.tvz.java.web.susac.joke.model.Joke;
 import hr.tvz.java.web.susac.joke.model.User;
@@ -9,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.TestPropertySource;
 
 import javax.transaction.Transactional;
 
@@ -18,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
+@MockBean({SchedulerConfig.class, VerificationJob.class})
+@TestPropertySource(locations = "classpath:application-test.properties")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class JokeRepositoryTests {
 
@@ -71,6 +77,15 @@ public class JokeRepositoryTests {
 
     @Test
     @Order(5)
+    public void findAllByUserDateDesc(){
+        List<Joke> jokeList = jokeRepository.findAllByUserDateDesc("admin");
+
+        assertNotNull(jokeList);
+        assertEquals(3, jokeList.size());
+    }
+
+    @Test
+    @Order(6)
     public void save(){
         Category category = categoryRepository.findOneByName("Programming");
         User user = userRepository.findOneByUsername("userone").get();
@@ -90,7 +105,7 @@ public class JokeRepositoryTests {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     public void deleteById(){
         Joke joke = jokeRepository.findOneById(4);
 

@@ -1,13 +1,18 @@
 package hr.tvz.java.web.susac.joke.service;
 
+import hr.tvz.java.web.susac.joke.configuration.SchedulerConfig;
 import hr.tvz.java.web.susac.joke.dto.JokeDTO;
 import hr.tvz.java.web.susac.joke.dto.CategorySearchDTO;
+import hr.tvz.java.web.susac.joke.dto.user.UserDTO;
+import hr.tvz.java.web.susac.joke.jobs.VerificationJob;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.TestPropertySource;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -16,11 +21,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
+@MockBean({SchedulerConfig.class, VerificationJob.class})
+@TestPropertySource(locations = "classpath:application-test.properties")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class JokeServiceTests {
     
     @Autowired
     private JokeService jokeService;
+
+    @Autowired
+    private UserService userService;
 
     @Test
     @Order(1)
@@ -66,6 +76,17 @@ public class JokeServiceTests {
 
     @Test
     @Order(5)
+    public void findAllByUser(){
+        UserDTO userDTO = userService.findOneByUsernameEnabled("admin");
+
+        List<JokeDTO> jokeList = jokeService.findAllByUser(userDTO);
+
+        assertNotNull(jokeList);
+        assertEquals(3, jokeList.size());
+    }
+
+    @Test
+    @Order(6)
     public void save_new(){
         JokeDTO jokeDTO = new JokeDTO();
         jokeDTO.setCategory("New Joke");
@@ -99,7 +120,7 @@ public class JokeServiceTests {
     }
 
     @Test
-    @Order(7)
+    @Order(8)
     public void deleteById(){
         JokeDTO jokeDTO = jokeService.findOneById(4);
 

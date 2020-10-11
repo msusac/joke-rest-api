@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,6 +22,7 @@ public class CategoryConverterImpl implements ConverterUtil<Category, CategoryDT
 
     private final CategoryRepository categoryRepository;
     private final JokeRepository jokeRepository;
+
     private final ModelMapper mapper;
 
     @Override
@@ -46,6 +48,7 @@ public class CategoryConverterImpl implements ConverterUtil<Category, CategoryDT
             Category existingCategory = categoryRepository.findOneById(category.getId());
             category.setJokeList(existingCategory.getJokeList());
             category.setDateTimeCreated(existingCategory.getDateTimeCreated());
+            category.setDateTimeUpdated(LocalDateTime.now());
         }
 
         return category;

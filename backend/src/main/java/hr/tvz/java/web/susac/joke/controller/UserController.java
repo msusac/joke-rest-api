@@ -1,12 +1,18 @@
 package hr.tvz.java.web.susac.joke.controller;
 
+import hr.tvz.java.web.susac.joke.dto.JokeDTO;
 import hr.tvz.java.web.susac.joke.dto.user.LoginDTO;
-import hr.tvz.java.web.susac.joke.repository.UserRepository;
+import hr.tvz.java.web.susac.joke.dto.user.RegisterDTO;
+import hr.tvz.java.web.susac.joke.dto.user.UserDTO;
 import hr.tvz.java.web.susac.joke.security.jwt.JwtFilter;
 import hr.tvz.java.web.susac.joke.security.jwt.TokenProvider;
+import hr.tvz.java.web.susac.joke.service.JokeService;
 import hr.tvz.java.web.susac.joke.service.UserService;
+import hr.tvz.java.web.susac.joke.service.VerificationService;
+import hr.tvz.java.web.susac.joke.util.validation.ValidationErrorPrinter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,30 +20,65 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.CollectionUtils;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Objects;
+
+@Slf4j
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = "/api/user")
 public class UserController {
 
+    private final JokeService jokeService;
     private final UserService userService;
-    private final TokenProvider tokenProvider;
+    private final VerificationService verificationService;
+
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final TokenProvider tokenProvider;
+
+    @GetMapping("/{username}")
+    public ResponseEntity<?> getOneByUsername(@PathVariable("username") String username){
+        UserDTO userDTO = userService.findOneByUsernameEnabled(username);
+
+        if(Objects.isNull(userDTO))
+            return new ResponseEntity<>("User does not exists!", HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
+    }
+
+    @GetMapping("/{username}/joke")
+    public ResponseEntity<?> getAllJokesByUsername(@PathVariable("username") String username){
+        UserDTO userDTO = userService.findOneByUsernameEnabled(username);
+
+        if(Objects.isNull(userDTO))
+            return new ResponseEntity<>("User does not exists!", HttpStatus.NOT_FOUND);
+
+        List<JokeDTO> jokeDTOList = jokeService.findAllByUser(userDTO);
+
+        if(CollectionUtils.isEmpty(jokeDTOList))
+            return new ResponseEntity<>("Joke list is empty!", HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(jokeDTOList, HttpStatus.OK);
+    }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO){
+    public ResponseEntity<?> login(@Valid @RequestBody LoginDTO loginDTO, Errors errors){
+        if(errors.hasErrors())
+            return ValidationErrorPrinter.showValidationError(errors);
+
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword());
 
-        if(!userService.isEnabled(loginDTO))
-            return new ResponseEntity<>("Your account is not enabled!", HttpStatus.UNAUTHORIZED);
-
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        if(!userService.isEnabled(loginDTO))
+            return new ResponseEntity<>("Your account is not enabled!", HttpStatus.UNAUTHORIZED);
 
         String jwt = tokenProvider.createToken(authentication);
 
@@ -47,9 +88,57 @@ public class UserController {
         return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterDTO registerDTO, Errors errors){
+        if(errors.hasErrors())
+            return ValidationErrorPrinter.showValidationError(errors);
+
+        if(!userService.isFreeUsername(registerDTO) || !userService.isFreeEmail(registerDTO)
+            || !userService.doPasswordsMatch(registerDTO))
+            return showOtherValidationError(registerDTO);
+
+        try{
+            userService.register(registerDTO);
+        }
+        catch(Exception e){
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        return new ResponseEntity<>("Account successfully created!" + " " +
+                "You will receive activation link on email address!", HttpStatus.CREATED);
+    }
+
+    @GetMapping("/accountVerification/{token}")
+    public ResponseEntity<?> accountVerification(@PathVariable("token") String token){
+
+        if(!verificationService.isValid(token))
+            return new ResponseEntity<>("Your verification token is invalid or has expired!", HttpStatus.NOT_ACCEPTABLE);
+
+        return new ResponseEntity<>("Account is successfully activated!" + " " +
+                "You can now log-in!", HttpStatus.OK);
+    }
+
     @Data
     @AllArgsConstructor
     static class JWTToken {
         private String token;
+    }
+
+    public ResponseEntity<?> showOtherValidationError(RegisterDTO registerDTO){
+        String error = "";
+        System.out.println(registerDTO.toString());
+
+        if(!userService.isFreeUsername(registerDTO))
+            error += "Username already taken!\n";
+
+        if(!userService.isFreeEmail(registerDTO))
+            error += "Email address already taken!\n";
+
+        if(!userService.doPasswordsMatch(registerDTO))
+            error += "Passwords must match each other!\n";
+
+
+        return new ResponseEntity<>(error, HttpStatus.NOT_ACCEPTABLE);
     }
 }

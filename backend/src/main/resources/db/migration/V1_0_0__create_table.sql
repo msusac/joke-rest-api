@@ -3,7 +3,7 @@ create table user_table(
     username varchar(50) unique not null,
     password varchar(80) not null,
     email varchar(255) unique not null,
-    enabled boolean not null default false,
+    enabled boolean default false not null,
     date_time_created timestamp not null
 );
 

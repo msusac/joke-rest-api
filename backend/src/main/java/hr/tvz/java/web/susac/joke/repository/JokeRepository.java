@@ -31,5 +31,11 @@ public interface JokeRepository extends JpaRepository<Joke, Integer> {
             "ORDER BY j.date_time_created DESC", nativeQuery = true)
     List<Joke> findAllByCategoryLikeDateDesc(@Param("name") String name);
 
+    @Query(value = "SELECT * FROM joke_table j " +
+            "INNER JOIN user_table u on j.user_id = u.id " +
+            "WHERE UPPER(u.username) = UPPER(:username) " +
+            "ORDER BY j.date_time_created DESC", nativeQuery = true)
+    List<Joke> findAllByUserDateDesc(@Param("username") String username);
+
     void deleteById(Integer id);
 }

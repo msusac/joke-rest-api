@@ -2,6 +2,7 @@ package hr.tvz.java.web.susac.joke.service.impl;
 
 import hr.tvz.java.web.susac.joke.dto.JokeDTO;
 import hr.tvz.java.web.susac.joke.dto.CategorySearchDTO;
+import hr.tvz.java.web.susac.joke.dto.user.UserDTO;
 import hr.tvz.java.web.susac.joke.model.Category;
 import hr.tvz.java.web.susac.joke.model.Joke;
 import hr.tvz.java.web.susac.joke.model.User;
@@ -26,6 +27,7 @@ public class JokeServiceImpl implements JokeService {
     private final CategoryRepository categoryRepository;
     private final JokeRepository jokeRepository;
     private final UserRepository userRepository;
+
     private final ConverterUtil<Joke, JokeDTO> converter;
 
     @Override
@@ -48,6 +50,14 @@ public class JokeServiceImpl implements JokeService {
     @Override
     public List<JokeDTO> findAllByParam(CategorySearchDTO categorySearchDTO) {
         List<Joke> jokeList = jokeRepository.findAllByCategoryLikeDateDesc(categorySearchDTO.getName());
+
+        return jokeList.stream().map(converter::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<JokeDTO> findAllByUser(UserDTO user) {
+        List<Joke> jokeList = jokeRepository.findAllByUserDateDesc(user.getUsername());
 
         return jokeList.stream().map(converter::convertToDTO)
                 .collect(Collectors.toList());

@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Component
@@ -17,11 +18,13 @@ import java.util.Objects;
 public class JokeConverterImpl implements ConverterUtil<Joke, JokeDTO> {
 
     private final JokeRepository jokeRepository;
+
     private final ModelMapper mapper;
 
     @Override
     public JokeDTO convertToDTO(Joke entity) {
         JokeDTO jokeDTO = mapper.map(entity, JokeDTO.class);
+        jokeDTO.setUser(entity.getUser().getUsername());
         jokeDTO.setCategory(entity.getCategory().getName());
         jokeDTO.setDateCreated(entity.getDateTimeCreated().toLocalDate());
 
@@ -40,6 +43,7 @@ public class JokeConverterImpl implements ConverterUtil<Joke, JokeDTO> {
             Joke existingJoke = jokeRepository.findOneById(joke.getId());
             joke.setCategory(existingJoke.getCategory());
             joke.setDateTimeCreated(existingJoke.getDateTimeCreated());
+            joke.setDateTimeUpdated(LocalDateTime.now());
         }
 
         return joke;
