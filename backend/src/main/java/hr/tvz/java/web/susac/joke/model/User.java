@@ -28,10 +28,18 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "email", unique = true, nullable = false)
+    private String email;
+
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Joke> jokeList = new ArrayList<>();
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToOne(mappedBy = "user")
+    private Verification verification;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -48,5 +56,5 @@ public class User {
     private LocalDateTime dateTimeCreated;
 
     @Column(name = "enabled", nullable = false)
-    private Boolean enabled;
+    private Boolean enabled = false;
 }

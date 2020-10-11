@@ -3,13 +3,14 @@ package hr.tvz.java.web.susac.joke.controller;
 import hr.tvz.java.web.susac.joke.dto.JokeDTO;
 import hr.tvz.java.web.susac.joke.dto.CategorySearchDTO;
 import hr.tvz.java.web.susac.joke.service.JokeService;
+import hr.tvz.java.web.susac.joke.util.validation.ValidationErrorPrinter;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.Errors;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -17,12 +18,13 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = "/api/joke")
 public class JokeController {
 
-    private JokeService jokeService;
+    private final JokeService jokeService;
 
     @GetMapping
     public ResponseEntity<?> getAll(){
@@ -57,23 +59,15 @@ public class JokeController {
     @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @PostMapping
     public ResponseEntity<?> save(@Valid @RequestBody JokeDTO jokeDTO, Errors errors, Principal principal){
-        if(errors.hasErrors()){
-            String error = "";
-            List<FieldError> errorsList = errors.getFieldErrors();
-
-            for(int i = 0; i < errorsList.size(); i++){
-                String fieldError = errorsList.get(i).getDefaultMessage() + "\n";
-                error += fieldError;
-            }
-
-            return new ResponseEntity<>(error, HttpStatus.NOT_ACCEPTABLE);
-        }
+        if(errors.hasErrors())
+            return ValidationErrorPrinter.showValidationError(errors);
 
         try{
             jokeDTO.setUser(principal.getName());
             jokeDTO = jokeService.save(jokeDTO);
         }
         catch(Exception e){
+            log.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
 
@@ -88,23 +82,16 @@ public class JokeController {
         if(Objects.isNull(jokeDTO))
             return new ResponseEntity<>("Selected Joke does not exists!", HttpStatus.NOT_FOUND);
 
-        if(errors.hasErrors()){
-            String error = "";
-            List<FieldError> errorsList = errors.getFieldErrors();
+        if(errors.hasErrors())
+            return ValidationErrorPrinter.showValidationError(errors);
 
-            for(int i = 0; i < errorsList.size(); i++){
-                String fieldError = errorsList.get(i).getDefaultMessage() + "\n";
-                error += fieldError;
-            }
-
-            return new ResponseEntity<>(error, HttpStatus.NOT_ACCEPTABLE);
-        }
 
         try{
             updateDTO.setId(id);
             jokeService.save(updateDTO);
         }
         catch(Exception e){
+            log.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
 
@@ -124,6 +111,7 @@ public class JokeController {
             jokeService.deleteById(id);
         }
         catch(Exception e){
+            log.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
 

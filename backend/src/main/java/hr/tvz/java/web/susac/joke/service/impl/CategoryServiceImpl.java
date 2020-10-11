@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+
     private final ConverterUtil<Category, CategoryDTO> converter;
 
     @Override

@@ -5,7 +5,7 @@ insert into user_table (username, password, email, enabled, date_time_created) v
 ('userone','$2y$10$JIAgfHgF.m46.NxudvmHf.SyW/SfiNv9Xtut3r9C.hqYV3wrg1/Je', 'userone@user.com', true, '2020-05-02 12:53:20');
 
 insert into user_table (username, password, email, enabled, date_time_created) values
-('usertwo','$2y$10$WvB95PkzBTd25B11C1xrMu81adKm.Jvuy5VgV4hcV/b.zWrL8q6L2', 'usertwo@user.com', false, '2020-05-03 13:53:20');
+('usertwo','$2y$10$WvB95PkzBTd25B11C1xrMu81adKm.Jvuy5VgV4hcV/b.zWrL8q6L2', 'usertwo@user.com', false, now());
 
 insert into authority_table (name) values ('ROLE_ADMIN');
 insert into authority_table (name) values ('ROLE_USER');
