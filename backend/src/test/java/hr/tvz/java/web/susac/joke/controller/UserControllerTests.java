@@ -58,28 +58,6 @@ public class UserControllerTests {
 
     @Test
     @Order(3)
-    public void getAllJokesByUsername() throws Exception{
-        this.mockMvc.perform(
-                get("/api/user/admin/joke")
-                        .contentType(MediaType.APPLICATION_JSON)
-        )
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(3)));
-    }
-
-    @Test
-    @Order(4)
-    public void getAllJokesByUsername_NotFound() throws Exception{
-        this.mockMvc.perform(
-                get("/api/user/faileduser/joke")
-                        .contentType(MediaType.APPLICATION_JSON)
-        )
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @Order(5)
     public void login() throws Exception{
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setUsername("admin");
@@ -95,7 +73,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @Order(6)
+    @Order(4)
     public void login_FailedValidation() throws Exception{
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setUsername("admin");
@@ -110,7 +88,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @Order(7)
+    @Order(5)
     public void login_Unauthorized() throws Exception{
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setUsername("userone");
@@ -126,7 +104,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @Order(8)
+    @Order(6)
     public void login_NotEnabled() throws Exception{
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setUsername("usertwo");
@@ -142,7 +120,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @Order(9)
+    @Order(7)
     public void register() throws Exception{
         RegisterDTO registerDTO = new RegisterDTO();
         registerDTO.setUsername("junituser");
@@ -160,7 +138,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @Order(10)
+    @Order(8)
     public void register_FailedValidation() throws Exception{
         RegisterDTO registerDTO = new RegisterDTO();
         registerDTO.setUsername("junituser");
@@ -175,7 +153,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @Order(11)
+    @Order(9)
     public void register_UsernameAlreadyTaken() throws Exception{
         RegisterDTO registerDTO = new RegisterDTO();
         registerDTO.setUsername("admin");
@@ -193,7 +171,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @Order(12)
+    @Order(10)
     public void register_EmailAlreadyTaken() throws Exception{
         RegisterDTO registerDTO = new RegisterDTO();
         registerDTO.setUsername("junituser");
@@ -211,7 +189,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @Order(13)
+    @Order(11)
     public void register_PasswordsNotMatch() throws Exception{
         RegisterDTO registerDTO = new RegisterDTO();
         registerDTO.setUsername("junituser");
@@ -229,7 +207,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @Order(14)
+    @Order(12)
     public void accountVerification() throws Exception{
         this.mockMvc.perform(
                 get("/api/user/accountVerification/testtwo")
@@ -251,7 +229,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @Order(15)
+    @Order(13)
     public void accountVerification_Failed() throws Exception{
         this.mockMvc.perform(
                 get("/api/user/accountVerification/failed")

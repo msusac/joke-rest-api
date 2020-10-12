@@ -1,12 +1,10 @@
 package hr.tvz.java.web.susac.joke.controller;
 
-import hr.tvz.java.web.susac.joke.dto.JokeDTO;
 import hr.tvz.java.web.susac.joke.dto.user.LoginDTO;
 import hr.tvz.java.web.susac.joke.dto.user.RegisterDTO;
 import hr.tvz.java.web.susac.joke.dto.user.UserDTO;
 import hr.tvz.java.web.susac.joke.security.jwt.JwtFilter;
 import hr.tvz.java.web.susac.joke.security.jwt.TokenProvider;
-import hr.tvz.java.web.susac.joke.service.JokeService;
 import hr.tvz.java.web.susac.joke.service.UserService;
 import hr.tvz.java.web.susac.joke.service.VerificationService;
 import hr.tvz.java.web.susac.joke.util.validation.ValidationErrorPrinter;
@@ -20,12 +18,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.CollectionUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -34,7 +30,6 @@ import java.util.Objects;
 @RequestMapping(value = "/api/user")
 public class UserController {
 
-    private final JokeService jokeService;
     private final UserService userService;
     private final VerificationService verificationService;
 
@@ -49,21 +44,6 @@ public class UserController {
             return new ResponseEntity<>("User does not exists!", HttpStatus.NOT_FOUND);
 
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
-    }
-
-    @GetMapping("/{username}/joke")
-    public ResponseEntity<?> getAllJokesByUsername(@PathVariable("username") String username){
-        UserDTO userDTO = userService.findOneByUsernameEnabled(username);
-
-        if(Objects.isNull(userDTO))
-            return new ResponseEntity<>("User does not exists!", HttpStatus.NOT_FOUND);
-
-        List<JokeDTO> jokeDTOList = jokeService.findAllByUser(userDTO);
-
-        if(CollectionUtils.isEmpty(jokeDTOList))
-            return new ResponseEntity<>("Joke list is empty!", HttpStatus.NOT_FOUND);
-
-        return new ResponseEntity<>(jokeDTOList, HttpStatus.OK);
     }
 
     @PostMapping("/login")

@@ -62,20 +62,21 @@ public class JokeControllerTests {
 
     @Test
     @Order(2)
-    public void getOneById() throws Exception{
+    public void getAllJokesByCategory() throws Exception{
         this.mockMvc.perform(
-                get("/api/joke/1")
+                get("/api/joke/by-category/Chuck Norris")
                         .contentType(MediaType.APPLICATION_JSON)
         )
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(2)));
     }
 
     @Test
     @Order(3)
-    public void getOneById_NotFound() throws Exception{
+    public void getAllJokesByCategory_NotFound() throws Exception{
         this.mockMvc.perform(
-                get("/api/joke/11")
+                get("/api/joke/by-category/C")
                         .contentType(MediaType.APPLICATION_JSON)
         )
                 .andExpect(status().isNotFound());
@@ -88,7 +89,7 @@ public class JokeControllerTests {
         categorySearchDTO.setName("Prog");
 
         this.mockMvc.perform(
-                post("/api/joke/search")
+                post("/api/joke/by-search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(categorySearchDTO))
                         .accept(MediaType.APPLICATION_JSON)
@@ -99,8 +100,51 @@ public class JokeControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
     @Order(5)
+    public void getAllJokesByUsername() throws Exception{
+        this.mockMvc.perform(
+                get("/api/joke/by-user/admin")
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(3)));
+    }
+
+    @Test
+    @Order(6)
+    public void getAllJokesByUsername_NotFound() throws Exception{
+        this.mockMvc.perform(
+                get("/api/joke/by-user/faileduser")
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @Order(7)
+    public void getOneById() throws Exception{
+        this.mockMvc.perform(
+                get("/api/joke/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    @Order(8)
+    public void getOneById_NotFound() throws Exception{
+        this.mockMvc.perform(
+                get("/api/joke/11")
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
+    @Order(9)
     public void save_NewCategory() throws Exception{
         JokeDTO jokeDTO = new JokeDTO();
         jokeDTO.setCategory("School");
@@ -121,7 +165,7 @@ public class JokeControllerTests {
 
     @Test
     @WithMockUser(username = "userone", authorities = "ROLE_USER")
-    @Order(6)
+    @Order(10)
     public void save_ExistingCategory() throws Exception{
         JokeDTO jokeDTO = new JokeDTO();
         jokeDTO.setCategory("Programming");
@@ -142,7 +186,7 @@ public class JokeControllerTests {
 
     @Test
     @WithMockUser(username = "userone", authorities = "ROLE_USER")
-    @Order(7)
+    @Order(11)
     public void save_FailedValidation() throws Exception{
         JokeDTO jokeDTO = new JokeDTO();
 
@@ -155,14 +199,13 @@ public class JokeControllerTests {
                 .andExpect(status().isNotAcceptable());
     }
 
-
     @Test
     @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
-    @Order(8)
+    @Order(12)
     public void update_NewCategory() throws Exception{
         JokeDTO jokeDTO = new JokeDTO();
         jokeDTO.setCategory("School");
-        jokeDTO.setDescription("I got D++!");;
+        jokeDTO.setDescription("I got D++!");
 
         this.mockMvc.perform(
                 put("/api/joke/3")
@@ -181,11 +224,11 @@ public class JokeControllerTests {
 
     @Test
     @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
-    @Order(9)
+    @Order(13)
     public void update_ExistingCategory() throws Exception{
         JokeDTO jokeDTO = new JokeDTO();
         jokeDTO.setCategory("Programming");
-        jokeDTO.setDescription("I got C++!");;
+        jokeDTO.setDescription("I got C++!");
 
         this.mockMvc.perform(
                 put("/api/joke/3")
@@ -204,7 +247,7 @@ public class JokeControllerTests {
 
     @Test
     @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
-    @Order(10)
+    @Order(14)
     public void update_FailedValidation() throws Exception{
         JokeDTO jokeDTO = new JokeDTO();
 
@@ -219,7 +262,7 @@ public class JokeControllerTests {
 
     @Test
     @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
-    @Order(11)
+    @Order(15)
     public void update_NotFound() throws Exception{
         JokeDTO jokeDTO = new JokeDTO();
 
@@ -234,7 +277,7 @@ public class JokeControllerTests {
 
     @Test
     @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
-    @Order(12)
+    @Order(16)
     public void deleteById() throws Exception{
         this.mockMvc.perform(
                 delete("/api/joke/1")
