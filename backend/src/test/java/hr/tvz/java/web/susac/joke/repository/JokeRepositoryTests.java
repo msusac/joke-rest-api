@@ -47,8 +47,8 @@ public class JokeRepositoryTests {
 
     @Test
     @Order(2)
-    public void findAllDateDesc(){
-        List<Joke> jokeList = jokeRepository.findAllDateDesc();
+    public void findAllNewest(){
+        List<Joke> jokeList = jokeRepository.findAllNewest();
 
         assertNotNull(jokeList);
         assertEquals(5, jokeList.size());
@@ -57,8 +57,8 @@ public class JokeRepositoryTests {
 
     @Test
     @Order(3)
-    public void findAllByCategoryDateDesc(){
-        List<Joke> jokeList = jokeRepository.findAllByCategoryDateDesc("Chuck Norris");
+    public void findAllByCategoryPopular(){
+        List<Joke> jokeList = jokeRepository.findAllByCategoryPopular("Chuck Norris");
 
         assertNotNull(jokeList);
         assertEquals(2, jokeList.size());
@@ -67,8 +67,8 @@ public class JokeRepositoryTests {
 
     @Test
     @Order(4)
-    public void findAllByCategoryLikeDateDesc(){
-        List<Joke> jokeList = jokeRepository.findAllByCategoryLikeDateDesc("Pro");
+    public void findAllByCategoryLikePopular(){
+        List<Joke> jokeList = jokeRepository.findAllByCategoryLikePopular("Pro");
 
         assertNotNull(jokeList);
         assertEquals(3, jokeList.size());
@@ -77,8 +77,8 @@ public class JokeRepositoryTests {
 
     @Test
     @Order(5)
-    public void findAllByUserDateDesc(){
-        List<Joke> jokeList = jokeRepository.findAllByUserDateDesc("admin");
+    public void findAllByUserPopular(){
+        List<Joke> jokeList = jokeRepository.findAllByUserPopular("admin");
 
         assertNotNull(jokeList);
         assertEquals(3, jokeList.size());
@@ -97,11 +97,10 @@ public class JokeRepositoryTests {
 
         jokeRepository.save(joke);
 
-        List<Joke> jokeList = jokeRepository.findAllByCategoryDateDesc("Programming");
+        List<Joke> jokeList = jokeRepository.findAllByCategoryPopular("Programming");
 
         assertNotNull(jokeList);
         assertEquals(4, jokeList.size());
-        assertEquals("C++", jokeList.get(0).getDescription());
     }
 
     @Test
@@ -111,7 +110,7 @@ public class JokeRepositoryTests {
 
         jokeRepository.deleteById(joke.getId());
 
-        List<Joke> jokeList = jokeRepository.findAllByCategoryDateDesc("Programming");
+        List<Joke> jokeList = jokeRepository.findAllByCategoryPopular("Programming");
 
         joke = jokeRepository.findOneById(4);
 

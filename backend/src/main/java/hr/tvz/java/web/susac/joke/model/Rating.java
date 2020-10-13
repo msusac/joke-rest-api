@@ -1,39 +1,34 @@
 package hr.tvz.java.web.susac.joke.model;
 
+import hr.tvz.java.web.susac.joke.enums.RatingTypeEnum;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "joke_table")
-public class Joke {
+@NoArgsConstructor
+@Table(name = "rating_table")
+public class Rating {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     private Integer id;
 
-    @Column(name = "description", nullable = false)
-    private String description;
-
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "joke", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Rating> ratingList = new ArrayList<>();
+    @Column(name = "type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private RatingTypeEnum type;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    @JoinColumn(name = "joke_id", nullable = false)
+    private Joke joke;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

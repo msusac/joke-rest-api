@@ -33,8 +33,8 @@ public class JokeController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<?> getAll(){
-        List<JokeDTO> jokeDTOList = jokeService.findAllLatest();
+    public ResponseEntity<?> getAllNewest(){
+        List<JokeDTO> jokeDTOList = jokeService.findAllNewest();
 
         if(CollectionUtils.isEmpty(jokeDTOList))
             return new ResponseEntity<>("Joke list is empty!", HttpStatus.NOT_FOUND);

@@ -13,7 +13,7 @@ public interface JokeService {
     List<JokeDTO> findAllByCategory(String name);
     List<JokeDTO> findAllByParam(CategorySearchDTO categorySearchDTO);
     List<JokeDTO> findAllByUser(UserDTO user);
-    List<JokeDTO> findAllLatest();
+    List<JokeDTO> findAllNewest();
 
     JokeDTO save(JokeDTO jokeDTO);
 

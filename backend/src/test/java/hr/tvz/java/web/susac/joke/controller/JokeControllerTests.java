@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hr.tvz.java.web.susac.joke.configuration.SchedulerConfig;
 import hr.tvz.java.web.susac.joke.dto.JokeDTO;
 import hr.tvz.java.web.susac.joke.dto.CategorySearchDTO;
-import hr.tvz.java.web.susac.joke.service.CategoryService;
+import hr.tvz.java.web.susac.joke.jobs.VerificationJob;
 import hr.tvz.java.web.susac.joke.service.JokeService;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -24,8 +24,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -34,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
-@MockBean(SchedulerConfig.class)
+@MockBean({SchedulerConfig.class, VerificationJob.class})
 @TestPropertySource(locations = "classpath:application-test.properties")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class JokeControllerTests {

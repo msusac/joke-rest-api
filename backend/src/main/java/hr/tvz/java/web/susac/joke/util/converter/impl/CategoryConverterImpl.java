@@ -30,7 +30,7 @@ public class CategoryConverterImpl implements ConverterUtil<Category, CategoryDT
         CategoryDTO categoryDTO = mapper.map(entity, CategoryDTO.class);
         categoryDTO.setDateCreated(entity.getDateTimeCreated().toLocalDate());
 
-        List<Joke> jokeList = jokeRepository.findAllByCategoryDateDesc(entity.getName());
+        List<Joke> jokeList = jokeRepository.findAllByCategoryPopular(entity.getName());
         categoryDTO.setJokeCount(jokeList.size());
 
         if(!Objects.isNull(entity.getDateTimeUpdated())) {

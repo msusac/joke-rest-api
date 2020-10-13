@@ -35,6 +35,9 @@ public class JokeDTO {
     @JsonProperty(value = "user", access = JsonProperty.Access.READ_ONLY)
     private String user;
 
+    @JsonProperty(value = "vote_count", access = JsonProperty.Access.READ_ONLY)
+    private Integer voteCount;
+
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @JsonFormat(pattern = "dd.MM.yyyy.")
     @JsonProperty(value = "date_created", access = JsonProperty.Access.READ_ONLY)

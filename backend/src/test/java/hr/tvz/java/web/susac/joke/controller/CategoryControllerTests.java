@@ -3,6 +3,7 @@ package hr.tvz.java.web.susac.joke.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hr.tvz.java.web.susac.joke.configuration.SchedulerConfig;
 import hr.tvz.java.web.susac.joke.dto.CategoryDTO;
+import hr.tvz.java.web.susac.joke.jobs.VerificationJob;
 import hr.tvz.java.web.susac.joke.service.CategoryService;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -27,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
-@MockBean(SchedulerConfig.class)
+@MockBean({SchedulerConfig.class, VerificationJob.class})
 @TestPropertySource(locations = "classpath:application-test.properties")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CategoryControllerTests {

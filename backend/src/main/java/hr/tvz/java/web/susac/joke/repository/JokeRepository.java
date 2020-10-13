@@ -17,25 +17,32 @@ public interface JokeRepository extends JpaRepository<Joke, Integer> {
 
     @Query(value = "SELECT * FROM joke_table j " +
             "ORDER BY j.date_time_created DESC", nativeQuery = true)
-    List<Joke> findAllDateDesc();
+    List<Joke> findAllNewest();
 
-    @Query(value = "SELECT * FROM joke_table j " +
+    @Query(value = "SELECT j.* FROM joke_table j " +
             "INNER JOIN category_table c on j.category_id = c.id " +
+            "LEFT OUTER JOIN rating_table r on r.joke_id = c.id " +
             "WHERE UPPER(c.name) = UPPER(:name) " +
-            "ORDER BY j.date_time_created DESC", nativeQuery = true)
-    List<Joke> findAllByCategoryDateDesc(@Param("name") String name);
+            "GROUP BY j.id " +
+            "ORDER BY COUNT(r.joke_id) DESC", nativeQuery = true)
+    List<Joke> findAllByCategoryPopular(@Param("name") String name);
 
-    @Query(value = "SELECT * FROM joke_table j " +
+    @Query(value = "SELECT j.* FROM joke_table j " +
             "INNER JOIN category_table c on j.category_id = c.id " +
+            "LEFT OUTER JOIN rating_table r on r.joke_id = c.id " +
             "WHERE UPPER(c.name) LIKE UPPER(CONCAT(:name,'%')) " +
-            "ORDER BY j.date_time_created DESC", nativeQuery = true)
-    List<Joke> findAllByCategoryLikeDateDesc(@Param("name") String name);
+            "GROUP BY j.id " +
+            "ORDER BY COUNT(r.joke_id) DESC", nativeQuery = true)
+    List<Joke> findAllByCategoryLikePopular(@Param("name") String name);
 
-    @Query(value = "SELECT * FROM joke_table j " +
+
+    @Query(value = "SELECT j.* FROM joke_table j " +
             "INNER JOIN user_table u on j.user_id = u.id " +
+            "LEFT OUTER JOIN rating_table r on r.joke_id = j.id " +
             "WHERE UPPER(u.username) = UPPER(:username) " +
-            "ORDER BY j.date_time_created DESC", nativeQuery = true)
-    List<Joke> findAllByUserDateDesc(@Param("username") String username);
+            "GROUP BY j.id " +
+            "ORDER BY COUNT(r.joke_id) DESC", nativeQuery = true)
+    List<Joke> findAllByUserPopular(@Param("username") String username);
 
     void deleteById(Integer id);
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hr.tvz.java.web.susac.joke.configuration.SchedulerConfig;
 import hr.tvz.java.web.susac.joke.dto.user.LoginDTO;
 import hr.tvz.java.web.susac.joke.dto.user.RegisterDTO;
+import hr.tvz.java.web.susac.joke.jobs.VerificationJob;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
-@MockBean(SchedulerConfig.class)
+@MockBean({SchedulerConfig.class, VerificationJob.class})
 @TestPropertySource(locations = "classpath:application-test.properties")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserControllerTests {

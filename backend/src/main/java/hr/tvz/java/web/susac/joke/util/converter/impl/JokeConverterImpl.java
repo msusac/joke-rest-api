@@ -27,6 +27,7 @@ public class JokeConverterImpl implements ConverterUtil<Joke, JokeDTO> {
         jokeDTO.setUser(entity.getUser().getUsername());
         jokeDTO.setCategory(entity.getCategory().getName());
         jokeDTO.setDateCreated(entity.getDateTimeCreated().toLocalDate());
+        jokeDTO.setVoteCount(entity.getRatingList().size());
 
         if(!Objects.isNull(entity.getDateTimeUpdated())) {
             jokeDTO.setDateUpdated(entity.getDateTimeUpdated().toLocalDate());

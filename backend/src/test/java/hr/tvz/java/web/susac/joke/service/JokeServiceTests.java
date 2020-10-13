@@ -43,8 +43,8 @@ public class JokeServiceTests {
 
     @Test
     @Order(2)
-    public void findAllLatest(){
-        List<JokeDTO> jokeList = jokeService.findAllLatest();
+    public void findAllNewest(){
+        List<JokeDTO> jokeList = jokeService.findAllNewest();
 
         assertNotNull(jokeList);
         assertEquals(5, jokeList.size());
@@ -116,7 +116,6 @@ public class JokeServiceTests {
 
         assertNotNull(jokeList);
         assertEquals(4, jokeList.size());
-        assertEquals("C++", jokeList.get(0).getDescription());
     }
 
     @Test

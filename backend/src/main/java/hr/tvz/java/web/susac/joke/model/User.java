@@ -38,6 +38,11 @@ public class User {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Rating> ratingList = new ArrayList<>();
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToOne(mappedBy = "user")
     private Verification verification;
 

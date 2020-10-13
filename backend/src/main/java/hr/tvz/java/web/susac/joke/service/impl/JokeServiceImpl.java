@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -41,7 +42,7 @@ public class JokeServiceImpl implements JokeService {
 
     @Override
     public List<JokeDTO> findAllByCategory(String name) {
-        List<Joke> jokeList = jokeRepository.findAllByCategoryDateDesc(name);
+        List<Joke> jokeList = jokeRepository.findAllByCategoryPopular(name);
 
         return jokeList.stream().map(converter::convertToDTO)
                 .collect(Collectors.toList());
@@ -49,7 +50,7 @@ public class JokeServiceImpl implements JokeService {
 
     @Override
     public List<JokeDTO> findAllByParam(CategorySearchDTO categorySearchDTO) {
-        List<Joke> jokeList = jokeRepository.findAllByCategoryLikeDateDesc(categorySearchDTO.getName());
+        List<Joke> jokeList = jokeRepository.findAllByCategoryLikePopular(categorySearchDTO.getName());
 
         return jokeList.stream().map(converter::convertToDTO)
                 .collect(Collectors.toList());
@@ -57,15 +58,15 @@ public class JokeServiceImpl implements JokeService {
 
     @Override
     public List<JokeDTO> findAllByUser(UserDTO user) {
-        List<Joke> jokeList = jokeRepository.findAllByUserDateDesc(user.getUsername());
+        List<Joke> jokeList = jokeRepository.findAllByUserPopular(user.getUsername());
 
         return jokeList.stream().map(converter::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<JokeDTO> findAllLatest() {
-        List<Joke> jokeList = jokeRepository.findAllDateDesc();
+    public List<JokeDTO> findAllNewest() {
+        List<Joke> jokeList = jokeRepository.findAllNewest();
 
         return jokeList.stream().map(converter::convertToDTO)
                 .collect(Collectors.toList());
