@@ -5,10 +5,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Positive;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class RatingDisplayDTO {
+
+    @Positive
+    @JsonProperty(value = "joke_id", access = JsonProperty.Access.READ_ONLY)
+    private Integer jokeId;
 
     @JsonProperty(value = "liked_count", access = JsonProperty.Access.READ_ONLY)
     private Integer likedCount;

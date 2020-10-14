@@ -7,9 +7,9 @@ insert into user_table (username, password, email, enabled, date_time_created) v
 insert into user_table (username, password, email, enabled, date_time_created) values
 ('usersix','$2y$10$tPyF.tPhnyA1evkWPctsmeiyl6IeTTODHMbtGE1qkXrEN7rctWYTy', 'six@user.com', true, '2020-10-06 13:53:20');
 
-insert into user_authority_table (user_id, authority_id) values (4, 2);
 insert into user_authority_table (user_id, authority_id) values (5, 2);
 insert into user_authority_table (user_id, authority_id) values (6, 2);
+insert into user_authority_table (user_id, authority_id) values (7, 2);
 
 insert into rating_table (type, user_id, joke_id, date_time_created) values
 ('FUNNY', 1, 1, '2020-10-01 14:53:20');

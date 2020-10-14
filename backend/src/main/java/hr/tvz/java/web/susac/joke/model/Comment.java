@@ -13,8 +13,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "joke_table")
-public class Joke {
+@Table(name = "comment_table")
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,19 +26,20 @@ public class Joke {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "joke", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Comment> commentList = new ArrayList<>();
-
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "joke", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Rating> ratingList = new ArrayList<>();
+    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Comment> replyCommentList = new ArrayList<>();
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    @JoinColumn(name = "parent_id", nullable = true)
+    private Comment parent;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToOne
+    @JoinColumn(name = "joke_id", nullable = false)
+    private Joke joke;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -49,8 +50,4 @@ public class Joke {
     @CreationTimestamp
     @Column(name = "date_time_created", nullable = false)
     private LocalDateTime dateTimeCreated;
-
-    @UpdateTimestamp
-    @Column(name = "date_time_updated")
-    private LocalDateTime dateTimeUpdated;
 }

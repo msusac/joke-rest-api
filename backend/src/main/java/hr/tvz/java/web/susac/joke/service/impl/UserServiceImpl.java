@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
         Authority authority = authorityRepository.findOneByName("ROLE_USER");
         user.getAuthoritySet().add(authority);
 
-        userRepository.save(user);
+        user = userRepository.save(user);
 
         sendActivationMail(user);
     }

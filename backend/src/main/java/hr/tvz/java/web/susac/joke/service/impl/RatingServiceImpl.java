@@ -34,7 +34,7 @@ public class RatingServiceImpl implements RatingService {
     public RatingDTO save(RatingDTO ratingDTO) {
         Rating rating = converter.convertToEntity(ratingDTO);
 
-        ratingRepository.save(rating);
+        rating = ratingRepository.save(rating);
 
         return converter.convertToDTO(rating);
     }

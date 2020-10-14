@@ -34,6 +34,12 @@ public class RatingConverterImpl implements ConverterUtil<Rating, RatingDTO> {
         ratingDTO.setJokeId(entity.getJoke().getId());
         ratingDTO.setUser(entity.getUser().getUsername());
 
+        ratingDTO.setDateCreated(entity.getDateTimeCreated().toLocalDate());
+
+        if(!Objects.isNull(entity.getDateTimeUpdated())){
+            ratingDTO.setDateUpdated(entity.getDateTimeUpdated().toLocalDate());
+        }
+
         return ratingDTO;
     }
 
@@ -47,7 +53,6 @@ public class RatingConverterImpl implements ConverterUtil<Rating, RatingDTO> {
         if(!Objects.isNull(existingRating)){
             rating.setId(existingRating.getId());
             rating.setDateTimeCreated(existingRating.getDateTimeCreated());
-            rating.setDateTimeUpdated(LocalDateTime.now());
         }
 
         Joke joke = jokeRepository.findOneById(dto.getJokeId());

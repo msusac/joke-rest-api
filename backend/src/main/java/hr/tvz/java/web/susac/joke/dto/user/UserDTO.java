@@ -25,6 +25,9 @@ public class UserDTO {
     @JsonProperty(value = "authority", access = JsonProperty.Access.READ_ONLY)
     private String authority;
 
+    @JsonProperty(value = "comment_count", access = JsonProperty.Access.READ_ONLY)
+    private Integer commentCount;
+
     @JsonProperty(value = "joke_count", access = JsonProperty.Access.READ_ONLY)
     private Integer jokeCount;
 

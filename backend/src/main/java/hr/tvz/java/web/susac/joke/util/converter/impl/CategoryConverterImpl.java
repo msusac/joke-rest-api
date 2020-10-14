@@ -48,7 +48,6 @@ public class CategoryConverterImpl implements ConverterUtil<Category, CategoryDT
             Category existingCategory = categoryRepository.findOneById(category.getId());
             category.setJokeList(existingCategory.getJokeList());
             category.setDateTimeCreated(existingCategory.getDateTimeCreated());
-            category.setDateTimeUpdated(LocalDateTime.now());
         }
 
         return category;

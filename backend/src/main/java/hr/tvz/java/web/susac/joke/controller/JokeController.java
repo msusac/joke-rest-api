@@ -37,7 +37,7 @@ public class JokeController {
         List<JokeDTO> jokeDTOList = jokeService.findAllNewest();
 
         if(CollectionUtils.isEmpty(jokeDTOList))
-            return new ResponseEntity<>("Joke list is empty!", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Joke list is empty!", HttpStatus.NO_CONTENT);
 
         return new ResponseEntity<>(jokeDTOList, HttpStatus.OK);
     }
@@ -52,7 +52,7 @@ public class JokeController {
         List<JokeDTO> jokeDTOList = jokeService.findAllByCategory(categoryDTO.getName());
 
         if (CollectionUtils.isEmpty(jokeDTOList))
-            return new ResponseEntity<>("Selected Joke Category list is empty!", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Selected Joke Category list is empty!", HttpStatus.NO_CONTENT);
 
 
         return new ResponseEntity<>(jokeDTOList, HttpStatus.OK);
@@ -63,7 +63,7 @@ public class JokeController {
         List<JokeDTO> jokeDTOList = jokeService.findAllByParam(categorySearchDTO);
 
         if(CollectionUtils.isEmpty(jokeDTOList))
-            return new ResponseEntity<>("Joke list is empty!", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Joke list is empty!", HttpStatus.NO_CONTENT);
 
         return new ResponseEntity<>(jokeDTOList, HttpStatus.OK);
     }
@@ -78,7 +78,7 @@ public class JokeController {
         List<JokeDTO> jokeDTOList = jokeService.findAllByUser(userDTO);
 
         if(CollectionUtils.isEmpty(jokeDTOList))
-            return new ResponseEntity<>("Joke list is empty!", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Joke list is empty!", HttpStatus.NO_CONTENT);
 
         return new ResponseEntity<>(jokeDTOList, HttpStatus.OK);
     }
@@ -121,7 +121,6 @@ public class JokeController {
 
         if(errors.hasErrors())
             return ValidationErrorPrinter.showValidationError(errors);
-
 
         try{
             updateDTO.setId(id);

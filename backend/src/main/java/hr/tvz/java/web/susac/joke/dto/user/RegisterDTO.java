@@ -5,10 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @Data
 @NoArgsConstructor
@@ -16,6 +13,7 @@ import javax.validation.constraints.Size;
 public class RegisterDTO {
 
     @NotNull(message = "Please write down Username!")
+    @NotBlank(message = "Username must not be empty!")
     @Size(min = 6, max = 25, message = "Username must be between 6 and 25 characters!")
     @Pattern(regexp = "^[A-Za-z0-9]+$", message = "Use only alphanumeric letters without space for Username!")
     @JsonProperty(value = "username", access = JsonProperty.Access.READ_WRITE)
@@ -28,10 +26,11 @@ public class RegisterDTO {
     private String password;
 
     @NotNull(message = "Please repeat the Password!")
-    @JsonProperty(value = "repeat-password", access = JsonProperty.Access.READ_WRITE)
+    @JsonProperty(value = "repeat_password", access = JsonProperty.Access.READ_WRITE)
     private String repeatPassword;
 
     @NotNull(message = "Please write down Email!")
+    @NotBlank(message = "E-mail address must not be empty!")
     @Email(message = "Please follow the rules of writing down Email correctly!")
     @JsonProperty(value = "email", access = JsonProperty.Access.READ_WRITE)
     private String email;

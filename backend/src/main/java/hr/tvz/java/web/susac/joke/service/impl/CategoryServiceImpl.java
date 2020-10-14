@@ -52,7 +52,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDTO save(CategoryDTO categoryDTO) {
         Category category = converter.convertToEntity(categoryDTO);
 
-        categoryRepository.save(category);
+        category = categoryRepository.save(category);
 
         return converter.convertToDTO(category);
     }

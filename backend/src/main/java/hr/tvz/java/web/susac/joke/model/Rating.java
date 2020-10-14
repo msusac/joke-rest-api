@@ -41,6 +41,6 @@ public class Rating {
     private LocalDateTime dateTimeCreated;
 
     @UpdateTimestamp
-    @Column(name = "date_time_updated", nullable = true, updatable = false)
+    @Column(name = "date_time_updated")
     private LocalDateTime dateTimeUpdated;
 }

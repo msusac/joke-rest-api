@@ -19,21 +19,24 @@ public class JokeDTO {
     @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
     private Integer id;
 
-    @NotBlank(message = "Category Name must not be empty!")
     @NotNull(message = "Category Name must not be null!")
+    @NotBlank(message = "Category Name must not be empty!")
     @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Use only alphabet letters for Category Name!")
     @Size(min = 2, max = 80, message = "Category Name size must be between 2 and 80 characters!")
     @JsonProperty(value = "category", access = JsonProperty.Access.READ_WRITE)
     private String category;
 
-    @NotBlank(message = "Joke Description must not be empty!")
     @NotNull(message = "Joke Description must not be null!")
+    @NotBlank(message = "Joke Description must not be empty!")
     @Size(min = 2, max = 500, message = "Joke Description size must be between 2 and 500 characters!")
     @JsonProperty(value = "description", access = JsonProperty.Access.READ_WRITE)
     private String description;
 
     @JsonProperty(value = "user", access = JsonProperty.Access.READ_ONLY)
     private String user;
+
+    @JsonProperty(value = "comment_count", access = JsonProperty.Access.READ_ONLY)
+    private Integer commentCount;
 
     @JsonProperty(value = "vote_count", access = JsonProperty.Access.READ_ONLY)
     private Integer voteCount;

@@ -32,7 +32,7 @@ public class CategoryController {
         List<CategoryDTO> categoryDTOList = categoryService.findAllNameAsc();
 
         if (CollectionUtils.isEmpty(categoryDTOList))
-            return new ResponseEntity<>("Joke Category list is empty!", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Joke Category list is empty!", HttpStatus.NO_CONTENT);
 
 
         return new ResponseEntity<>(categoryDTOList, HttpStatus.OK);
@@ -58,7 +58,7 @@ public class CategoryController {
         List<JokeDTO> jokeDTOList = jokeService.findAllByCategory(categoryDTO.getName());
 
         if (CollectionUtils.isEmpty(jokeDTOList))
-            return new ResponseEntity<>("Selected Joke Category list is empty!", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Selected Joke Category list is empty!", HttpStatus.NO_CONTENT);
 
 
         return new ResponseEntity<>(jokeDTOList, HttpStatus.OK);

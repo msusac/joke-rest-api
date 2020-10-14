@@ -18,6 +18,7 @@ public class UserConverterImpl implements ConverterUtil<User, UserDTO> {
     @Override
     public UserDTO convertToDTO(User entity) {
         UserDTO userDTO = mapper.map(entity, UserDTO.class);
+        userDTO.setCommentCount(entity.getCommentList().size());
         userDTO.setJokeCount(entity.getJokeList().size());
         userDTO.setDateJoined(entity.getDateTimeCreated().toLocalDate());
 

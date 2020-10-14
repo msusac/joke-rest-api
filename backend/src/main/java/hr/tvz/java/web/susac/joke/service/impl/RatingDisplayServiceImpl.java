@@ -26,6 +26,7 @@ public class RatingDisplayServiceImpl implements RatingDisplayService {
         if(Objects.isNull(joke)) return null;
 
         RatingDisplayDTO ratingDisplayDTO = new RatingDisplayDTO();
+        ratingDisplayDTO.setJokeId(joke.getId());
         ratingDisplayDTO.setFunnyCount(ratingRepository.findAllFunnyByJokeId(id).size());
         ratingDisplayDTO.setLikedCount(ratingRepository.findAllLikedByJokeId(id).size());
         ratingDisplayDTO.setWowCount(ratingRepository.findAllWowByJokeId(id).size());

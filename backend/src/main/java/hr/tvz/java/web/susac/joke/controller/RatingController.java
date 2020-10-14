@@ -3,11 +3,9 @@ package hr.tvz.java.web.susac.joke.controller;
 import hr.tvz.java.web.susac.joke.dto.JokeDTO;
 import hr.tvz.java.web.susac.joke.dto.rating.RatingDTO;
 import hr.tvz.java.web.susac.joke.dto.rating.RatingDisplayDTO;
-import hr.tvz.java.web.susac.joke.dto.user.UserDTO;
 import hr.tvz.java.web.susac.joke.service.JokeService;
 import hr.tvz.java.web.susac.joke.service.RatingDisplayService;
 import hr.tvz.java.web.susac.joke.service.RatingService;
-import hr.tvz.java.web.susac.joke.service.UserService;
 import hr.tvz.java.web.susac.joke.util.validation.ValidationErrorPrinter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -69,8 +67,8 @@ public class RatingController {
             return ValidationErrorPrinter.showValidationError(errors);
 
         try{
-            ratingDTO.setUser(principal.getName());
             ratingDTO.setJokeId(id);
+            ratingDTO.setUser(principal.getName());
             ratingDTO = ratingService.save(ratingDTO);
         }
         catch(Exception e){

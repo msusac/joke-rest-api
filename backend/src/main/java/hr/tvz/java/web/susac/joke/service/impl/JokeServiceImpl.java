@@ -96,7 +96,7 @@ public class JokeServiceImpl implements JokeService {
         }
 
         joke.setCategory(category);
-        jokeRepository.save(joke);
+        joke = jokeRepository.save(joke);
 
         return converter.convertToDTO(joke);
     }
