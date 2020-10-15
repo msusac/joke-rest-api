@@ -93,8 +93,8 @@ public class CommentServiceTests {
 
         commentService.deleteById(commentDTO.getId());
 
-        commentDTO = commentService.findOneById(1);
+        List<CommentDTO> commentDTOList = commentService.findAllByJoke(1);
 
-        assertNull(commentDTO);
+        assertEquals(0, commentDTOList.size());
     }
 }

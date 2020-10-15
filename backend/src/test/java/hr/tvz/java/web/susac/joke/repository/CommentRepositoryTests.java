@@ -111,8 +111,8 @@ public class CommentRepositoryTests {
 
         commentRepository.deleteById(comment.getId());
 
-        comment = commentRepository.findOneById(1);
+        List<Comment> commentList = commentRepository.findAllNewestByJokeId(1);
 
-        assertNull(comment);
+        assertEquals(0, commentList.size());
     }
 }

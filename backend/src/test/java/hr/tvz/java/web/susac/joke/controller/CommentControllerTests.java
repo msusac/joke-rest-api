@@ -46,6 +46,17 @@ public class CommentControllerTests {
 
     @Test
     @Order(1)
+    public void getOneById() throws Exception{
+        this.mockMvc.perform(
+                get("/api/comment/1")
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    @Order(2)
     public void getAllByJoke() throws Exception{
         this.mockMvc.perform(
                 get("/api/joke/1/comments")
@@ -57,7 +68,7 @@ public class CommentControllerTests {
     }
 
     @Test
-    @Order(2)
+    @Order(3)
     public void getAllByUser() throws Exception{
         this.mockMvc.perform(
                 get("/api/user/userone/comments")
@@ -70,7 +81,7 @@ public class CommentControllerTests {
 
     @Test
     @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
-    @Order(3)
+    @Order(4)
     public void save() throws Exception {
         CommentDTO commentDTO = new CommentDTO();
         commentDTO.setDescription("Hello world!");
@@ -90,7 +101,7 @@ public class CommentControllerTests {
 
     @Test
     @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
-    @Order(4)
+    @Order(5)
     public void save_ReplyTo() throws Exception {
         CommentDTO commentDTO = new CommentDTO();
         commentDTO.setParentId(2);
@@ -111,7 +122,7 @@ public class CommentControllerTests {
 
     @Test
     @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
-    @Order(5)
+    @Order(6)
     public void save_NotFound() throws Exception {
         CommentDTO commentDTO = new CommentDTO();
         commentDTO.setDescription("Hello world!");
@@ -127,7 +138,7 @@ public class CommentControllerTests {
 
     @Test
     @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
-    @Order(6)
+    @Order(7)
     public void save_FailedValidation() throws Exception {
         CommentDTO commentDTO = new CommentDTO();
 
@@ -138,5 +149,21 @@ public class CommentControllerTests {
                         .accept(MediaType.APPLICATION_JSON)
         )
                 .andExpect(status().isNotAcceptable());
+    }
+
+    @Test
+    @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
+    @Order(8)
+    public void deleteById() throws Exception {
+        this.mockMvc.perform(
+                delete("/api/comment/1")
+        )
+                .andExpect(status().isOk());
+
+        this.mockMvc.perform(
+                get("/api/comment/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isNotFound());
     }
 }

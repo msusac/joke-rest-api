@@ -31,6 +31,16 @@ public class CommentController {
     private final JokeService jokeService;
     private final UserService userService;
 
+    @GetMapping("/comment/{id}")
+    public ResponseEntity<?> getOneById(@PathVariable("id") Integer id){
+        CommentDTO commentDTO = commentService.findOneById(id);
+
+        if(Objects.isNull(commentDTO))
+            return new ResponseEntity<>("Selected Comment does not exists!", HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(commentDTO, HttpStatus.OK);
+    }
+
     @GetMapping("/joke/{id}/comments")
     public ResponseEntity<?> getAllByJoke(@PathVariable("id") Integer id){
         JokeDTO jokeDTO = jokeService.findOneById(id);
@@ -86,5 +96,24 @@ public class CommentController {
         }
 
         return new ResponseEntity<>(commentDTO, HttpStatus.CREATED);
+    }
+
+    @Secured("ROLE_ADMIN")
+    @DeleteMapping("/comment/{id}")
+    public ResponseEntity<?> deleteById(@PathVariable("id") Integer id){
+        CommentDTO commentDTO = commentService.findOneById(id);
+
+        if(Objects.isNull(commentDTO))
+            return new ResponseEntity<>("Selected Comment does not exists!", HttpStatus.NOT_FOUND);
+
+        try{
+            commentService.deleteById(commentDTO.getId());
+        }
+        catch(Exception e){
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        return new ResponseEntity<>("Comment was successfully deleted!", HttpStatus.OK);
     }
 }
