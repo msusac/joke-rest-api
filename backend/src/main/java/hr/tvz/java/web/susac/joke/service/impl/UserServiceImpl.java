@@ -1,5 +1,6 @@
 package hr.tvz.java.web.susac.joke.service.impl;
 
+import hr.tvz.java.web.susac.joke.dto.search.UserSearchDTO;
 import hr.tvz.java.web.susac.joke.dto.user.LoginDTO;
 import hr.tvz.java.web.susac.joke.dto.user.RegisterDTO;
 import hr.tvz.java.web.susac.joke.dto.user.UserDTO;
@@ -19,9 +20,11 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -44,6 +47,15 @@ public class UserServiceImpl implements UserService {
             return null;
 
         return converter.convertToDTO(user);
+    }
+
+    @Override
+    public List<UserDTO> findAllByParam(UserSearchDTO userSearchDTO) {
+        List<User> userList = userRepository.findAllByUsernameAndEmail(userSearchDTO.getUsername(),
+                userSearchDTO.getEmail());
+
+        return userList.stream().map(converter::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

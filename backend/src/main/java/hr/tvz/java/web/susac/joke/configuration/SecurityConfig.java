@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -36,8 +37,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET,"/api/category", "/api/category/**",
-                        "/api/joke", "/api/joke/**", "/api/comment/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/joke/by-search").permitAll()
+                        "/api/joke", "/api/joke/**", "/api/comment/**", "/swagger-ui.html").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/joke/by-search", "/api/category/by-search",
+                        "/api/user/by-search").permitAll()
                 .antMatchers("/api/user/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/joke/{id}/rating").authenticated()
                 .antMatchers(HttpMethod.POST, "/joke/{id}/comment")

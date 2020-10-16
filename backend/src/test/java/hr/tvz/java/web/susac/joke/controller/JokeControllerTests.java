@@ -3,7 +3,7 @@ package hr.tvz.java.web.susac.joke.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hr.tvz.java.web.susac.joke.configuration.SchedulerConfig;
 import hr.tvz.java.web.susac.joke.dto.JokeDTO;
-import hr.tvz.java.web.susac.joke.dto.CategorySearchDTO;
+import hr.tvz.java.web.susac.joke.dto.search.CategorySearchDTO;
 import hr.tvz.java.web.susac.joke.jobs.VerificationJob;
 import hr.tvz.java.web.susac.joke.service.JokeService;
 import org.junit.jupiter.api.MethodOrderer;

@@ -48,7 +48,7 @@ public class CategoryRepositoryTests {
 
     @Test
     @Order(3)
-    public void findAllNameAsc(){
+    public void findAllByNameAsc(){
         List<Category> categoryList = categoryRepository.findAllNameAsc();
 
         assertNotNull(categoryList);
@@ -58,6 +58,16 @@ public class CategoryRepositoryTests {
 
     @Test
     @Order(4)
+    public void findAllByNameLikeAsc(){
+        List<Category> categoryList = categoryRepository.findAllByNameLikeAsc("Chuck");
+
+        assertNotNull(categoryList);
+        assertEquals(1, categoryList.size());
+        assertEquals("Chuck Norris", categoryList.get(0).getName());
+    }
+
+    @Test
+    @Order(5)
     public void save(){
         Category category = new Category();
         category.setName("Hello world!");
@@ -71,7 +81,7 @@ public class CategoryRepositoryTests {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     public void deleteById(){
         Category category = categoryRepository.findOneByName("Chuck Norris");
 

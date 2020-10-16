@@ -1,7 +1,7 @@
 package hr.tvz.java.web.susac.joke.service.impl;
 
 import hr.tvz.java.web.susac.joke.dto.JokeDTO;
-import hr.tvz.java.web.susac.joke.dto.CategorySearchDTO;
+import hr.tvz.java.web.susac.joke.dto.search.CategorySearchDTO;
 import hr.tvz.java.web.susac.joke.dto.user.UserDTO;
 import hr.tvz.java.web.susac.joke.model.Category;
 import hr.tvz.java.web.susac.joke.model.Joke;
@@ -15,7 +15,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;

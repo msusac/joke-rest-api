@@ -1,6 +1,7 @@
 package hr.tvz.java.web.susac.joke.service;
 
 import hr.tvz.java.web.susac.joke.configuration.SchedulerConfig;
+import hr.tvz.java.web.susac.joke.dto.search.UserSearchDTO;
 import hr.tvz.java.web.susac.joke.dto.user.LoginDTO;
 import hr.tvz.java.web.susac.joke.dto.user.RegisterDTO;
 import hr.tvz.java.web.susac.joke.dto.user.UserDTO;
@@ -18,6 +19,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import javax.transaction.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -48,6 +50,19 @@ public class UserServiceTests {
 
     @Test
     @Order(2)
+    public void findAllByParam(){
+        UserSearchDTO userSearchDTO = new UserSearchDTO();
+        userSearchDTO.setUsername("admin");
+        userSearchDTO.setEmail("admin");
+
+        List<UserDTO> userDTOList = userService.findAllByParam(userSearchDTO);
+
+        assertNotNull(userDTOList);
+        assertEquals(1, userDTOList.size());
+    }
+
+    @Test
+    @Order(3)
     public void isEnabled(){
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setUsername("admin");
@@ -57,7 +72,7 @@ public class UserServiceTests {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     public void isEnabled_Failed(){
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setUsername("usertwo");
@@ -67,7 +82,7 @@ public class UserServiceTests {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     public void isFreeEmail(){
         RegisterDTO registerDTO = new RegisterDTO();
         registerDTO.setUsername("junituser");
@@ -79,7 +94,7 @@ public class UserServiceTests {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     public void isFreeEmail_Failed(){
         RegisterDTO registerDTO = new RegisterDTO();
         registerDTO.setUsername("junituser");
@@ -91,7 +106,7 @@ public class UserServiceTests {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     public void isFreeUsername(){
         RegisterDTO registerDTO = new RegisterDTO();
         registerDTO.setUsername("junituser");
@@ -103,7 +118,7 @@ public class UserServiceTests {
     }
 
     @Test
-    @Order(7)
+    @Order(8)
     public void isFreeUsername_Failed(){
         RegisterDTO registerDTO = new RegisterDTO();
         registerDTO.setUsername("admin");
@@ -115,7 +130,7 @@ public class UserServiceTests {
     }
 
     @Test
-    @Order(8)
+    @Order(9)
     public void doPasswordsMatch(){
         RegisterDTO registerDTO = new RegisterDTO();
         registerDTO.setUsername("admin");
@@ -127,7 +142,7 @@ public class UserServiceTests {
     }
 
     @Test
-    @Order(9)
+    @Order(10)
     public void doPasswordsMatch_Failed(){
         RegisterDTO registerDTO = new RegisterDTO();
         registerDTO.setUsername("admin");
@@ -139,7 +154,7 @@ public class UserServiceTests {
     }
 
     @Test
-    @Order(10)
+    @Order(11)
     public void register(){
         RegisterDTO registerDTO = new RegisterDTO();
         registerDTO.setUsername("junituser");

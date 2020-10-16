@@ -3,6 +3,7 @@ package hr.tvz.java.web.susac.joke.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hr.tvz.java.web.susac.joke.configuration.SchedulerConfig;
 import hr.tvz.java.web.susac.joke.dto.CategoryDTO;
+import hr.tvz.java.web.susac.joke.dto.search.CategorySearchDTO;
 import hr.tvz.java.web.susac.joke.jobs.VerificationJob;
 import hr.tvz.java.web.susac.joke.service.CategoryService;
 import org.junit.jupiter.api.MethodOrderer;
@@ -56,6 +57,23 @@ public class CategoryControllerTests {
 
     @Test
     @Order(2)
+    public void getAllBySearch() throws Exception{
+        CategorySearchDTO categorySearchDTO = new CategorySearchDTO();
+        categorySearchDTO.setName("Chuck");
+
+        this.mockMvc.perform(
+                post("/api/category/by-search")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(categorySearchDTO))
+                        .accept(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    @Order(3)
     public void getOneById() throws Exception{
         this.mockMvc.perform(
                 get("/api/category/1")
@@ -66,7 +84,7 @@ public class CategoryControllerTests {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     public void getOneById_NotFound() throws Exception{
         this.mockMvc.perform(
                 get("/api/category/11")
@@ -76,7 +94,7 @@ public class CategoryControllerTests {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     public void getOneByIdDetails() throws Exception{
         this.mockMvc.perform(
                 get("/api/category/1/details")
@@ -89,7 +107,7 @@ public class CategoryControllerTests {
 
     @Test
     @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
-    @Order(5)
+    @Order(6)
     public void save() throws Exception{
         CategoryDTO categoryDTO = new CategoryDTO();
         categoryDTO.setName("My Cake");
@@ -110,7 +128,7 @@ public class CategoryControllerTests {
 
     @Test
     @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
-    @Order(6)
+    @Order(7)
     public void save_FailedValidation() throws Exception{
         CategoryDTO categoryDTO = new CategoryDTO();
         categoryDTO.setName("My Cake 342");
@@ -126,7 +144,7 @@ public class CategoryControllerTests {
 
     @Test
     @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
-    @Order(7)
+    @Order(8)
     public void save_ExistingCategory() throws Exception{
         CategoryDTO categoryDTO = new CategoryDTO();
         categoryDTO.setName("Programming");
@@ -142,7 +160,7 @@ public class CategoryControllerTests {
 
     @Test
     @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
-    @Order(8)
+    @Order(9)
     public void update() throws Exception{
         CategoryDTO categoryDTO = new CategoryDTO();
         categoryDTO.setName("Chucky Norris");
@@ -164,7 +182,7 @@ public class CategoryControllerTests {
 
     @Test
     @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
-    @Order(9)
+    @Order(10)
     public void update_FailedValidation() throws Exception{
         CategoryDTO categoryDTO = new CategoryDTO();
         categoryDTO.setName("Chucky Norris 231");
@@ -180,7 +198,7 @@ public class CategoryControllerTests {
 
     @Test
     @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
-    @Order(10)
+    @Order(11)
     public void update_ExistingCategory() throws Exception{
         CategoryDTO categoryDTO = new CategoryDTO();
         categoryDTO.setName("Programming");
@@ -196,7 +214,7 @@ public class CategoryControllerTests {
 
     @Test
     @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
-    @Order(11)
+    @Order(12)
     public void update_NotFound() throws Exception{
         CategoryDTO categoryDTO = new CategoryDTO();
         categoryDTO.setName("Chucky Norris");
@@ -212,7 +230,7 @@ public class CategoryControllerTests {
 
     @Test
     @WithMockUser(username = "admin", authorities = "ROLE_ADMIN")
-    @Order(12)
+    @Order(13)
     public void deleteById() throws Exception{
         this.mockMvc.perform(
                 delete("/api/category/1")

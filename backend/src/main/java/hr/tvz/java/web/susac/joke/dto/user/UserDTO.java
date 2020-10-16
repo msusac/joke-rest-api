@@ -22,6 +22,9 @@ public class UserDTO {
     @JsonProperty(value = "username", access = JsonProperty.Access.READ_ONLY)
     private String username;
 
+    @JsonProperty(value = "email", access = JsonProperty.Access.READ_ONLY)
+    private String email;
+
     @JsonProperty(value = "authority", access = JsonProperty.Access.READ_ONLY)
     private String authority;
 
@@ -35,4 +38,7 @@ public class UserDTO {
     @JsonFormat(pattern = "dd.MM.yyyy.")
     @JsonProperty(value = "date_joined", access = JsonProperty.Access.READ_ONLY)
     private LocalDate dateJoined;
+
+    @JsonProperty(value = "enabled", access = JsonProperty.Access.READ_ONLY)
+    private Boolean enabled;
 }

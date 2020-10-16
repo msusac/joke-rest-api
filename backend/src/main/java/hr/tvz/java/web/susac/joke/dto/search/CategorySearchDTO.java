@@ -1,4 +1,4 @@
-package hr.tvz.java.web.susac.joke.dto;
+package hr.tvz.java.web.susac.joke.dto.search;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

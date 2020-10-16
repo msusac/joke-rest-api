@@ -2,6 +2,7 @@ package hr.tvz.java.web.susac.joke.service;
 
 import hr.tvz.java.web.susac.joke.configuration.SchedulerConfig;
 import hr.tvz.java.web.susac.joke.dto.CategoryDTO;
+import hr.tvz.java.web.susac.joke.dto.search.CategorySearchDTO;
 import hr.tvz.java.web.susac.joke.jobs.VerificationJob;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -59,6 +60,19 @@ public class CategoryServiceTests {
 
     @Test
     @Order(4)
+    public void findAllByNameLikeAsc(){
+        CategorySearchDTO categorySearchDTO = new CategorySearchDTO();
+        categorySearchDTO.setName("Chuck");
+
+        List<CategoryDTO> categoryDTOList = categoryService.findAllByNameLikeAsc(categorySearchDTO);
+
+        assertNotNull(categoryDTOList);
+        assertEquals(1, categoryDTOList.size());
+        assertEquals("Chuck Norris", categoryDTOList.get(0).getName());
+    }
+
+    @Test
+    @Order(5)
     public void save(){
         CategoryDTO categoryDTO = new CategoryDTO();
         categoryDTO.setName("Hello world!");
@@ -72,7 +86,7 @@ public class CategoryServiceTests {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     public void deleteById(){
         CategoryDTO category = categoryService.findOneById(1);
 

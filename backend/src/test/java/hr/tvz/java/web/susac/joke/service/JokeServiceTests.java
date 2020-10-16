@@ -2,7 +2,7 @@ package hr.tvz.java.web.susac.joke.service;
 
 import hr.tvz.java.web.susac.joke.configuration.SchedulerConfig;
 import hr.tvz.java.web.susac.joke.dto.JokeDTO;
-import hr.tvz.java.web.susac.joke.dto.CategorySearchDTO;
+import hr.tvz.java.web.susac.joke.dto.search.CategorySearchDTO;
 import hr.tvz.java.web.susac.joke.dto.user.UserDTO;
 import hr.tvz.java.web.susac.joke.jobs.VerificationJob;
 import org.junit.jupiter.api.MethodOrderer;

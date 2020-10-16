@@ -11,10 +11,13 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.test.context.TestPropertySource;
 
 import javax.transaction.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -61,6 +64,15 @@ public class UserRepositoryTests {
 
     @Test
     @Order(4)
+    public void findAllByUsernameAndEmail(){
+        List<User> userList = userRepository.findAllByUsernameAndEmail("admin", "admin");
+
+        assertNotNull(userList);
+        assertEquals(1, userList.size());
+    }
+
+    @Test
+    @Order(5)
     public void save(){
         User user = new User();
         user.setUsername("junituser");
@@ -79,7 +91,7 @@ public class UserRepositoryTests {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     public void deleteById(){
         Optional<User> user = userRepository.findOneByUsername("admin");
 

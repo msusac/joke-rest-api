@@ -2,6 +2,7 @@ package hr.tvz.java.web.susac.joke.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hr.tvz.java.web.susac.joke.configuration.SchedulerConfig;
+import hr.tvz.java.web.susac.joke.dto.search.UserSearchDTO;
 import hr.tvz.java.web.susac.joke.dto.user.LoginDTO;
 import hr.tvz.java.web.susac.joke.dto.user.RegisterDTO;
 import hr.tvz.java.web.susac.joke.jobs.VerificationJob;
@@ -44,7 +45,8 @@ public class UserControllerTests {
                 get("/api/user/admin")
                         .contentType(MediaType.APPLICATION_JSON)
         )
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -59,6 +61,24 @@ public class UserControllerTests {
 
     @Test
     @Order(3)
+    public void getAllBySearch() throws Exception {
+        UserSearchDTO userSearchDTO = new UserSearchDTO();
+        userSearchDTO.setUsername("admin");
+        userSearchDTO.setEmail("admin");
+
+        this.mockMvc.perform(
+                post("/api/user/by-search")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(userSearchDTO))
+                        .accept(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    @Order(4)
     public void login() throws Exception{
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setUsername("admin");
@@ -74,7 +94,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     public void login_FailedValidation() throws Exception{
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setUsername("admin");
@@ -89,7 +109,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     public void login_Unauthorized() throws Exception{
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setUsername("userone");
@@ -105,7 +125,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     public void login_NotEnabled() throws Exception{
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setUsername("usertwo");
@@ -121,7 +141,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @Order(7)
+    @Order(8)
     public void register() throws Exception{
         RegisterDTO registerDTO = new RegisterDTO();
         registerDTO.setUsername("junituser");
@@ -139,7 +159,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @Order(8)
+    @Order(9)
     public void register_FailedValidation() throws Exception{
         RegisterDTO registerDTO = new RegisterDTO();
         registerDTO.setUsername("junituser");
@@ -154,7 +174,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @Order(9)
+    @Order(10)
     public void register_UsernameAlreadyTaken() throws Exception{
         RegisterDTO registerDTO = new RegisterDTO();
         registerDTO.setUsername("admin");
@@ -172,7 +192,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @Order(10)
+    @Order(11)
     public void register_EmailAlreadyTaken() throws Exception{
         RegisterDTO registerDTO = new RegisterDTO();
         registerDTO.setUsername("junituser");
@@ -190,7 +210,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @Order(11)
+    @Order(12)
     public void register_PasswordsNotMatch() throws Exception{
         RegisterDTO registerDTO = new RegisterDTO();
         registerDTO.setUsername("junituser");
@@ -208,7 +228,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @Order(12)
+    @Order(13)
     public void accountVerification() throws Exception{
         this.mockMvc.perform(
                 get("/api/user/accountVerification/testtwo")
@@ -230,7 +250,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @Order(13)
+    @Order(14)
     public void accountVerification_Failed() throws Exception{
         this.mockMvc.perform(
                 get("/api/user/accountVerification/failed")

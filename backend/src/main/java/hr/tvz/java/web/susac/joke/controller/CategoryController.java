@@ -1,6 +1,7 @@
 package hr.tvz.java.web.susac.joke.controller;
 
 import hr.tvz.java.web.susac.joke.dto.CategoryDTO;
+import hr.tvz.java.web.susac.joke.dto.search.CategorySearchDTO;
 import hr.tvz.java.web.susac.joke.dto.JokeDTO;
 import hr.tvz.java.web.susac.joke.service.CategoryService;
 import hr.tvz.java.web.susac.joke.service.JokeService;
@@ -30,6 +31,21 @@ public class CategoryController {
     @GetMapping
     public ResponseEntity<?> getAll() {
         List<CategoryDTO> categoryDTOList = categoryService.findAllNameAsc();
+
+        if (CollectionUtils.isEmpty(categoryDTOList))
+            return new ResponseEntity<>("Joke Category list is empty!", HttpStatus.NO_CONTENT);
+
+
+        return new ResponseEntity<>(categoryDTOList, HttpStatus.OK);
+    }
+
+    @PostMapping("/by-search")
+    public ResponseEntity<?> getAllBySearch(@Valid @RequestBody CategorySearchDTO categorySearchDTO,
+                                            Errors errors){
+        if(errors.hasErrors())
+            return ValidationErrorPrinter.showValidationError(errors);
+
+        List<CategoryDTO> categoryDTOList = categoryService.findAllByNameLikeAsc(categorySearchDTO);
 
         if (CollectionUtils.isEmpty(categoryDTOList))
             return new ResponseEntity<>("Joke Category list is empty!", HttpStatus.NO_CONTENT);

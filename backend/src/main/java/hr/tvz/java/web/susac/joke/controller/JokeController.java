@@ -2,7 +2,7 @@ package hr.tvz.java.web.susac.joke.controller;
 
 import hr.tvz.java.web.susac.joke.dto.CategoryDTO;
 import hr.tvz.java.web.susac.joke.dto.JokeDTO;
-import hr.tvz.java.web.susac.joke.dto.CategorySearchDTO;
+import hr.tvz.java.web.susac.joke.dto.search.CategorySearchDTO;
 import hr.tvz.java.web.susac.joke.dto.user.UserDTO;
 import hr.tvz.java.web.susac.joke.service.CategoryService;
 import hr.tvz.java.web.susac.joke.service.JokeService;
@@ -59,7 +59,10 @@ public class JokeController {
     }
 
     @PostMapping("/by-search")
-    public ResponseEntity<?> getAllBySearch(@RequestBody CategorySearchDTO categorySearchDTO){
+    public ResponseEntity<?> getAllBySearch(@Valid @RequestBody CategorySearchDTO categorySearchDTO, Errors errors){
+        if(errors.hasErrors())
+            return ValidationErrorPrinter.showValidationError(errors);
+
         List<JokeDTO> jokeDTOList = jokeService.findAllByParam(categorySearchDTO);
 
         if(CollectionUtils.isEmpty(jokeDTOList))

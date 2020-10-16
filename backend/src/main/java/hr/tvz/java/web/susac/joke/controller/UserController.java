@@ -1,5 +1,6 @@
 package hr.tvz.java.web.susac.joke.controller;
 
+import hr.tvz.java.web.susac.joke.dto.search.UserSearchDTO;
 import hr.tvz.java.web.susac.joke.dto.user.LoginDTO;
 import hr.tvz.java.web.susac.joke.dto.user.RegisterDTO;
 import hr.tvz.java.web.susac.joke.dto.user.UserDTO;
@@ -18,10 +19,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -44,6 +47,20 @@ public class UserController {
             return new ResponseEntity<>("User does not exists!", HttpStatus.NOT_FOUND);
 
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
+    }
+
+    @PostMapping("/by-search")
+    public ResponseEntity<?> getAllBySearch(@Valid @RequestBody UserSearchDTO userSearchDTO,
+                                            Errors errors){
+        if(errors.hasErrors())
+            return ValidationErrorPrinter.showValidationError(errors);
+
+        List<UserDTO> userDTOList = userService.findAllByParam(userSearchDTO);
+
+        if(CollectionUtils.isEmpty(userDTOList))
+            return new ResponseEntity<>("User list is empty!", HttpStatus.NO_CONTENT);
+
+        return new ResponseEntity<>(userDTOList, HttpStatus.OK);
     }
 
     @PostMapping("/login")

@@ -1,6 +1,7 @@
 package hr.tvz.java.web.susac.joke.service.impl;
 
 import hr.tvz.java.web.susac.joke.dto.CategoryDTO;
+import hr.tvz.java.web.susac.joke.dto.search.CategorySearchDTO;
 import hr.tvz.java.web.susac.joke.model.Category;
 import hr.tvz.java.web.susac.joke.repository.CategoryRepository;
 import hr.tvz.java.web.susac.joke.service.CategoryService;
@@ -43,6 +44,14 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryDTO> findAllNameAsc() {
         List<Category> categoryList = categoryRepository.findAllNameAsc();
+
+        return categoryList.stream().map(converter::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CategoryDTO> findAllByNameLikeAsc(CategorySearchDTO categorySearchDTO) {
+        List<Category> categoryList = categoryRepository.findAllByNameLikeAsc(categorySearchDTO.getName());
 
         return categoryList.stream().map(converter::convertToDTO)
                 .collect(Collectors.toList());

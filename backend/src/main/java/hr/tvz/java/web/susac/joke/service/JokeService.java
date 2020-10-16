@@ -1,7 +1,7 @@
 package hr.tvz.java.web.susac.joke.service;
 
 import hr.tvz.java.web.susac.joke.dto.JokeDTO;
-import hr.tvz.java.web.susac.joke.dto.CategorySearchDTO;
+import hr.tvz.java.web.susac.joke.dto.search.CategorySearchDTO;
 import hr.tvz.java.web.susac.joke.dto.user.UserDTO;
 
 import java.util.List;
