@@ -34,6 +34,15 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public CommentDTO findOneByIdAndJoke(Integer commentId, Integer jokeId) {
+        Comment comment = commentRepository.findOneByIdAndJoke_Id(commentId, jokeId);
+
+        if(Objects.isNull(comment)) return null;
+
+        return converter.convertToDTO(comment);
+    }
+
+    @Override
     public List<CommentDTO> findAllByJoke(Integer id) {
         List<Comment> commentList = commentRepository.findAllNewestByJokeId(id);
 

@@ -46,6 +46,14 @@ public class CommentRepositoryTests {
 
     @Test
     @Order(2)
+    public void findOneByIdAndJokeId(){
+        Comment comment = commentRepository.findOneByIdAndJoke_Id(1, 1);
+
+        assertNotNull(comment);
+    }
+
+    @Test
+    @Order(3)
     public void findAllNewestByJokeId(){
         Joke joke = jokeRepository.findOneById(1);
 
@@ -56,7 +64,7 @@ public class CommentRepositoryTests {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     public void findAllNewestByUserId(){
         User user = userRepository.findOneByUsername("admin").get();
 
@@ -67,7 +75,7 @@ public class CommentRepositoryTests {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     public void save(){
         Joke joke = jokeRepository.findOneById(3);
         User user = userRepository.findOneByUsername("admin").get();
@@ -86,7 +94,7 @@ public class CommentRepositoryTests {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     public void save_reply() {
         Joke joke = jokeRepository.findOneById(3);
         User user = userRepository.findOneByUsername("admin").get();
@@ -105,7 +113,7 @@ public class CommentRepositoryTests {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     public void deleteById(){
         Comment comment = commentRepository.findOneById(1);
 

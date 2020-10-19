@@ -34,7 +34,7 @@ public class RatingServiceTests {
         RatingDTO ratingDTO = ratingService.findOneByJokeAndUser(1, "usertwo");
 
         assertNotNull(ratingDTO);
-        assertEquals(RatingTypeEnum.LIKED, ratingDTO.getRatingTypeEnum());
+        assertEquals(RatingTypeEnum.LIKED, ratingDTO.getRatingType());
         assertEquals(1, ratingDTO.getJokeId());
         assertEquals("usertwo", ratingDTO.getUser());
     }
@@ -43,14 +43,14 @@ public class RatingServiceTests {
     @Order(2)
     public void save(){
         RatingDTO ratingDTO = ratingService.findOneByJokeAndUser(1, "usertwo");;
-        ratingDTO.setRatingTypeEnum(RatingTypeEnum.WOW);
+        ratingDTO.setRatingType(RatingTypeEnum.WOW);
 
         ratingService.save(ratingDTO);
 
         ratingDTO = ratingService.findOneByJokeAndUser(1, "usertwo");
 
         assertNotNull(ratingDTO);
-        assertEquals(RatingTypeEnum.WOW, ratingDTO.getRatingTypeEnum());
+        assertEquals(RatingTypeEnum.WOW, ratingDTO.getRatingType());
         assertEquals(1, ratingDTO.getJokeId());
         assertEquals("usertwo", ratingDTO.getUser());
     }

@@ -37,6 +37,14 @@ public class CommentServiceTests {
 
     @Test
     @Order(2)
+    public void findOneByIdAndJoke(){
+        CommentDTO commentDTO = commentService.findOneByIdAndJoke(1, 1);
+
+        assertNotNull(commentDTO);
+    }
+
+    @Test
+    @Order(3)
     public void findAllByJoke(){
         List<CommentDTO> commentDTOList = commentService.findAllByJoke(1);
 
@@ -45,7 +53,7 @@ public class CommentServiceTests {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     public void findAllByUser(){
         List<CommentDTO> commentDTOList = commentService.findAllByUser(2);
 
@@ -54,7 +62,7 @@ public class CommentServiceTests {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     public void save(){
         CommentDTO commentDTO = new CommentDTO();
         commentDTO.setUser("admin");
@@ -70,13 +78,13 @@ public class CommentServiceTests {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     public void save_Reply(){
         CommentDTO commentDTO = new CommentDTO();
         commentDTO.setUser("usersix");
         commentDTO.setDescription("Test Comment!");
         commentDTO.setJokeId(1);
-        commentDTO.setParentId(1);
+        commentDTO.setParentCommentId(1);
 
         commentService.save(commentDTO);
 
@@ -87,7 +95,7 @@ public class CommentServiceTests {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     public void deleteById() {
         CommentDTO commentDTO = commentService.findOneById(1);
 

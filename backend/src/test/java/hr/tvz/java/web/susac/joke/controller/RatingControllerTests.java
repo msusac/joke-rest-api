@@ -82,7 +82,7 @@ public class RatingControllerTests {
     @Order(4)
     public void save() throws Exception {
         RatingDTO ratingDTO = new RatingDTO();
-        ratingDTO.setRatingTypeEnum(RatingTypeEnum.FUNNY);
+        ratingDTO.setRatingType(RatingTypeEnum.FUNNY);
 
         this.mockMvc.perform(
                 post("/api/joke/4/rate")
@@ -96,7 +96,7 @@ public class RatingControllerTests {
 
         assertNotNull(ratingDTO);
         assertEquals("admin", ratingDTO.getUser());
-        assertEquals(RatingTypeEnum.FUNNY, ratingDTO.getRatingTypeEnum());
+        assertEquals(RatingTypeEnum.FUNNY, ratingDTO.getRatingType());
     }
 
     @Test
@@ -119,7 +119,7 @@ public class RatingControllerTests {
     @Order(6)
     public void save_NotFound() throws Exception {
         RatingDTO ratingDTO = new RatingDTO();
-        ratingDTO.setRatingTypeEnum(RatingTypeEnum.FUNNY);
+        ratingDTO.setRatingType(RatingTypeEnum.FUNNY);
 
         this.mockMvc.perform(
                 post("/api/joke/99/rate")
@@ -135,7 +135,7 @@ public class RatingControllerTests {
     @Order(7)
     public void save_Existing() throws Exception {
         RatingDTO ratingDTO = new RatingDTO();
-        ratingDTO.setRatingTypeEnum(RatingTypeEnum.WOW);
+        ratingDTO.setRatingType(RatingTypeEnum.WOW);
 
         this.mockMvc.perform(
                 post("/api/joke/1/rate")
@@ -149,6 +149,6 @@ public class RatingControllerTests {
 
         assertNotNull(ratingDTO);
         assertEquals("admin", ratingDTO.getUser());
-        assertEquals(RatingTypeEnum.WOW, ratingDTO.getRatingTypeEnum());
+        assertEquals(RatingTypeEnum.WOW, ratingDTO.getRatingType());
     }
 }

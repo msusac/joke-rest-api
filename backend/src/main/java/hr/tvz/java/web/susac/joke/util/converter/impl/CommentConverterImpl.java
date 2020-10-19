@@ -34,7 +34,7 @@ public class CommentConverterImpl implements ConverterUtil<Comment, CommentDTO> 
         commentDTO.setDateTimeCreated(entity.getDateTimeCreated());
 
         if(!Objects.isNull(entity.getParent())){
-            commentDTO.setParentId(entity.getParent().getId());
+            commentDTO.setParentCommentId(entity.getParent().getId());
             commentDTO.setReplyTo(entity.getParent().getUser().getUsername());
         }
 
@@ -47,7 +47,7 @@ public class CommentConverterImpl implements ConverterUtil<Comment, CommentDTO> 
         comment.setDescription(dto.getDescription());
         comment.setDateTimeCreated(dto.getDateTimeCreated());
 
-        Comment parentComment = commentRepository.findOneById(dto.getParentId());
+        Comment parentComment = commentRepository.findOneById(dto.getParentCommentId());
         Joke joke = jokeRepository.findOneById(dto.getJokeId());
         User user = userRepository.findOneByUsername(dto.getUser()).get();
 

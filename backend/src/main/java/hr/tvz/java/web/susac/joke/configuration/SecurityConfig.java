@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET,"/api/category", "/api/category/**",
-                        "/api/joke", "/api/joke/**", "/api/comment/**", "/swagger-ui.html").permitAll()
+                        "/api/joke", "/api/joke/**", "/api/comment/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/joke/by-search", "/api/category/by-search",
                         "/api/user/by-search").permitAll()
                 .antMatchers("/api/user/**").permitAll()
@@ -53,5 +53,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/v2/api-docs",
+                "/configuration/ui",
+                "/swagger-resources/**",
+                "/configuration/security",
+                "/swagger-ui.html",
+                "/webjars/**");
     }
 }

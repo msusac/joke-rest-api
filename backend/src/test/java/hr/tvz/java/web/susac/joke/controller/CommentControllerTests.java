@@ -104,7 +104,7 @@ public class CommentControllerTests {
     @Order(5)
     public void save_ReplyTo() throws Exception {
         CommentDTO commentDTO = new CommentDTO();
-        commentDTO.setParentId(2);
+        commentDTO.setParentCommentId(2);
         commentDTO.setDescription("Hello world!");
 
         this.mockMvc.perform(

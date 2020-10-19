@@ -15,6 +15,8 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
     Comment findOneById(Integer id);
 
+    Comment findOneByIdAndJoke_Id(Integer commentId, Integer jokeId);
+
     @Query(value = "SELECT * FROM comment_table c " +
             "INNER JOIN joke_table j on c.joke_id = j.id " +
             "WHERE j.id = :id " +

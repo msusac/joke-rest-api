@@ -30,7 +30,7 @@ public class RatingConverterImpl implements ConverterUtil<Rating, RatingDTO> {
     @Override
     public RatingDTO convertToDTO(Rating entity) {
         RatingDTO ratingDTO = mapper.map(entity, RatingDTO.class);
-        ratingDTO.setRatingTypeEnum(entity.getType());
+        ratingDTO.setRatingType(entity.getType());
         ratingDTO.setJokeId(entity.getJoke().getId());
         ratingDTO.setUser(entity.getUser().getUsername());
 
@@ -46,7 +46,7 @@ public class RatingConverterImpl implements ConverterUtil<Rating, RatingDTO> {
     @Override
     public Rating convertToEntity(RatingDTO dto) {
         Rating rating = mapper.map(dto, Rating.class);
-        rating.setType(dto.getRatingTypeEnum());
+        rating.setType(dto.getRatingType());
 
         Rating existingRating = ratingRepository.findOneByJokeIdAndUsername(dto.getJokeId(), dto.getUser());
 

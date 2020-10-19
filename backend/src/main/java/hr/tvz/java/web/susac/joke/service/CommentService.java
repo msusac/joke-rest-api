@@ -9,6 +9,7 @@ import java.util.List;
 public interface CommentService {
 
     CommentDTO findOneById(Integer id);
+    CommentDTO findOneByIdAndJoke(Integer commentId, Integer jokeId);
 
     List<CommentDTO> findAllByJoke(Integer id);
     List<CommentDTO> findAllByUser(Integer id);
