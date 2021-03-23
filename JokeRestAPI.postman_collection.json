@@ -1,0 +1,521 @@
+{
+	"info": {
+		"_postman_id": "14815a6f-6f11-47f8-b58e-d356c990b9ea",
+		"name": "JokeRestAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "1.1. Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/category",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "1.2. Get All By Search",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"pro\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/category/search",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"category",
+								"search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.1. Get One By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/category/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"category",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.2. Get One By Id - Not Found",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/category/99",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"category",
+								"99"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Contains API operations for Joke Category model."
+		},
+		{
+			"name": "Joke",
+			"item": [
+				{
+					"name": "1. Get All By Random",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/joke/random",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"joke",
+								"random"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.1. Get One By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/joke/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"joke",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.2. Get One By Id - Not Found",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/joke/44",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"joke",
+								"44"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3.1.1. Save Joke - Existing Category",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"categoryTitle\": \"Chuck Norris\",\r\n    \"description\": \"This is a Chuck Norris joke!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/joke",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"joke"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3.1.2. Get New Joke - Existing Category",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"categoryTitle\": \"Chuck Norris\",\r\n    \"sortType\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/joke/search",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"joke",
+								"search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3.2.1. Save Joke - New Category",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"categoryTitle\": \"New Joke\",\r\n    \"description\": \"This is new joke!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/joke",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"joke"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3.2.2. Get New Joke - New Category",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"categoryTitle\": \"New Joke\",\r\n    \"sortType\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/joke/search",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"joke",
+								"search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3.3. Save Joke - Failed Validation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/joke",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"joke"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4.1.1. Update By Id - Existing Category",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"categoryTitle\": \"New Joke\",\r\n    \"description\": \"Updated Joke\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/joke/13",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"joke",
+								"13"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4.1.2. Get Updated Joke",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/joke/13",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"joke",
+								"13"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4.2.1. Update By Id - New Category",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"categoryTitle\": \"Super Joke\",\r\n    \"description\": \"Updated Joke V2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/joke/13",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"joke",
+								"13"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4.2.2. Get Updated Joke",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/joke/13",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"joke",
+								"13"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4.2.3. Get New Category",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Super Joke\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/category/search",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"category",
+								"search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4.3.1. Update By Id - Failed Validation",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/joke/13",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"joke",
+								"13"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4.3.2. Update By Id - Not Found",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"categoryTitle\": \"Non Existing Joke\",\r\n    \"description\": \"Non Existing Joke\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/joke/99",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"joke",
+								"99"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5.1. Delete By Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/joke/13",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"joke",
+								"13"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5.2. Delete By Id - Not Found",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/joke/13",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"joke",
+								"13"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Contains API operations for Joke model."
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "localhost:8090/"
+		}
+	]
+}
