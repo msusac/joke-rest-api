@@ -2,9 +2,7 @@ package hr.tvz.java.web.susac.joke.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hr.tvz.java.web.susac.joke.dto.JokeDTO;
-import hr.tvz.java.web.susac.joke.dto.CategorySearchDTO;
-import hr.tvz.java.web.susac.joke.service.CategoryService;
-import hr.tvz.java.web.susac.joke.service.JokeService;
+import hr.tvz.java.web.susac.joke.dto.JokeSearchDTO;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -13,31 +11,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.transaction.Transactional;
 
-import java.util.List;
-
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static hr.tvz.java.web.susac.joke.UtilStatic.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestPropertySource(locations = "classpath:application-test.yml")
 public class JokeControllerTests {
-
-    @Autowired
-    private CategoryService categoryService;
-
-    @Autowired
-    private JokeService jokeService;
 
     @Autowired
     private ObjectMapper mapper;
@@ -47,10 +36,26 @@ public class JokeControllerTests {
 
     @Test
     @Order(1)
-    public void getAll() throws Exception{
+    public void getAllByParam() throws Exception {
+        JokeSearchDTO searchDTO = createJokeSearchDTO();
+
         this.mockMvc.perform(
-                get("/api/joke")
-                        .contentType(MediaType.APPLICATION_JSON)
+                post(URL_API_JOKE + "/search")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(mapper.writeValueAsString(searchDTO))
+                    .accept(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(2)));
+    }
+
+    @Test
+    @Order(2)
+    public void getAllByRandom() throws Exception {
+        this.mockMvc.perform(
+                get(URL_API_JOKE + "/random")
+                .contentType(MediaType.APPLICATION_JSON)
         )
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -58,10 +63,10 @@ public class JokeControllerTests {
     }
 
     @Test
-    @Order(2)
-    public void getOneById() throws Exception{
+    @Order(3)
+    public void getOneById() throws Exception {
         this.mockMvc.perform(
-                get("/api/joke/1")
+                get(URL_API_JOKE + "/" + LONG_ID_ONE)
                         .contentType(MediaType.APPLICATION_JSON)
         )
                 .andExpect(status().isOk())
@@ -69,171 +74,132 @@ public class JokeControllerTests {
     }
 
     @Test
-    @Order(3)
-    public void getOneById_NotFound() throws Exception{
-        this.mockMvc.perform(
-                get("/api/joke/11")
-                        .contentType(MediaType.APPLICATION_JSON)
-        )
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
     @Order(4)
-    public void getAllByParam() throws Exception{
-        CategorySearchDTO categorySearchDTO = new CategorySearchDTO();
-        categorySearchDTO.setName("Prog");
-
+    public void getOneById_BadRequest_NotFound() throws Exception {
         this.mockMvc.perform(
-                post("/api/joke/search")
+                get(URL_API_JOKE + "/" + LONG_ID_ELEVEN)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(categorySearchDTO))
-                        .accept(MediaType.APPLICATION_JSON)
         )
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(3)));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     @Order(5)
-    public void save_NewCategory() throws Exception{
-        JokeDTO jokeDTO = new JokeDTO();
-        jokeDTO.setCategory("School");
-        jokeDTO.setDescription("I got F++!");
+    public void save_existingCategory() throws Exception {
+        JokeDTO jokeDTO = createJokeDTO_withExistingCategory();
 
         this.mockMvc.perform(
-                post("/api/joke")
+                post(URL_API_JOKE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(jokeDTO))
                         .accept(MediaType.APPLICATION_JSON)
         )
-                .andExpect(status().isCreated());
-
-        List<JokeDTO> jokeDTOList = jokeService.findAllByCategory("School");
-
-        assertEquals(1, jokeDTOList.size());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
     @Order(6)
-    public void save_ExistingCategory() throws Exception{
-        JokeDTO jokeDTO = new JokeDTO();
-        jokeDTO.setCategory("Programming");
-        jokeDTO.setDescription("I got C++!");
+    public void save_newCategory() throws Exception {
+        JokeDTO jokeDTO = createJokeDTO_withExistingCategory();
 
         this.mockMvc.perform(
-                post("/api/joke")
+                post(URL_API_JOKE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(jokeDTO))
                         .accept(MediaType.APPLICATION_JSON)
         )
-                .andExpect(status().isCreated());
-
-        List<JokeDTO> jokeDTOList = jokeService.findAllByCategory("Programming");
-
-        assertEquals(4, jokeDTOList.size());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
     @Order(7)
-    public void save_FailedValidation() throws Exception{
-        JokeDTO jokeDTO = new JokeDTO();
+    public void save_BadRequest_FailedValidation() throws Exception {
+        JokeDTO jokeDTO = createJokeDTO_incomplete();
 
         this.mockMvc.perform(
-                post("/api/joke")
+                post(URL_API_JOKE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(jokeDTO))
                         .accept(MediaType.APPLICATION_JSON)
         )
-                .andExpect(status().isNotAcceptable());
+                .andExpect(status().isBadRequest());
     }
-
 
     @Test
     @Order(8)
-    public void update_NewCategory() throws Exception{
-        JokeDTO jokeDTO = new JokeDTO();
-        jokeDTO.setCategory("School");
-        jokeDTO.setDescription("I got D++!");;
+    public void updateById_existingCategory() throws Exception {
+        JokeDTO jokeDTO = createJokeDTO_withExistingCategory();
 
         this.mockMvc.perform(
-                put("/api/joke/3")
+                put(URL_API_JOKE + "/" + LONG_ID_ONE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(jokeDTO))
                         .accept(MediaType.APPLICATION_JSON)
         )
-                .andExpect(status().isOk());
-
-        jokeDTO = jokeService.findOneById(3);
-
-        assertNotNull(jokeDTO);
-        assertEquals("School", jokeDTO.getCategory());
-        assertEquals("I got D++!", jokeDTO.getDescription());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
     @Order(9)
-    public void update_ExistingCategory() throws Exception{
-        JokeDTO jokeDTO = new JokeDTO();
-        jokeDTO.setCategory("Programming");
-        jokeDTO.setDescription("I got C++!");;
+    public void updateById_newCategory() throws Exception {
+        JokeDTO jokeDTO = createJokeDTO_withNewCategory();
 
         this.mockMvc.perform(
-                put("/api/joke/3")
+                put(URL_API_JOKE + "/" + LONG_ID_ONE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(jokeDTO))
                         .accept(MediaType.APPLICATION_JSON)
         )
-                .andExpect(status().isOk());
-
-        jokeDTO = jokeService.findOneById(3);
-
-        assertNotNull(jokeDTO);
-        assertEquals("Programming", jokeDTO.getCategory());
-        assertEquals("I got C++!", jokeDTO.getDescription());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
     @Order(10)
-    public void update_FailedValidation() throws Exception{
-        JokeDTO jokeDTO = new JokeDTO();
+    public void updateById_BadRequest_FailedValidation() throws Exception {
+        JokeDTO jokeDTO = createJokeDTO_incomplete();
 
         this.mockMvc.perform(
-                put("/api/joke/3")
+                put(URL_API_JOKE + "/" + LONG_ID_ONE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(jokeDTO))
                         .accept(MediaType.APPLICATION_JSON)
         )
-                .andExpect(status().isNotAcceptable());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     @Order(11)
-    public void update_NotFound() throws Exception{
-        JokeDTO jokeDTO = new JokeDTO();
+    public void updateById_BadRequest_NotFound() throws Exception {
+        JokeDTO jokeDTO = createJokeDTO_withNewCategory();
 
         this.mockMvc.perform(
-                put("/api/joke/11")
+                put(URL_API_JOKE + "/" + LONG_ID_ELEVEN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(jokeDTO))
                         .accept(MediaType.APPLICATION_JSON)
         )
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     @Order(12)
-    public void deleteById() throws Exception{
+    public void deleteById() throws Exception {
         this.mockMvc.perform(
-                delete("/api/joke/1")
+                delete(URL_API_JOKE + "/" + LONG_ID_ONE)
         )
                 .andExpect(status().isOk());
+    }
 
+    @Test
+    @Order(13)
+    public void deleteById_BadRequest_NotFound() throws Exception {
         this.mockMvc.perform(
-                get("/api/joke/1")
-                        .contentType(MediaType.APPLICATION_JSON)
+                delete(URL_API_JOKE + "/" + LONG_ID_ELEVEN)
         )
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 }

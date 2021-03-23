@@ -1,17 +1,15 @@
 package hr.tvz.java.web.susac.joke.service;
 
 import hr.tvz.java.web.susac.joke.dto.CategoryDTO;
+import hr.tvz.java.web.susac.joke.dto.CategorySearchDTO;
 
 import java.util.List;
 
 public interface CategoryService {
 
-    CategoryDTO findOneById(Integer id);
-    CategoryDTO findOneByName(String name);
+    List<CategoryDTO> findAll();
 
-    List<CategoryDTO> findAllNameAsc();
+    List<CategoryDTO> findAllByParam(CategorySearchDTO searchDTO);
 
-    CategoryDTO save(CategoryDTO categoryDTO);
-
-    void deleteById(Integer id);
+    CategoryDTO findOneById(Long id);
 }

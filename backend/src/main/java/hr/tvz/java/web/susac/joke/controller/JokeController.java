@@ -1,128 +1,119 @@
 package hr.tvz.java.web.susac.joke.controller;
 
 import hr.tvz.java.web.susac.joke.dto.JokeDTO;
-import hr.tvz.java.web.susac.joke.dto.CategorySearchDTO;
+import hr.tvz.java.web.susac.joke.dto.JokeSearchDTO;
+import hr.tvz.java.web.susac.joke.exception.joke.JokeNotFoundException;
 import hr.tvz.java.web.susac.joke.service.JokeService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.CollectionUtils;
 import org.springframework.validation.Errors;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 
+import static hr.tvz.java.web.susac.joke.exception.RestExceptionHandler.handleValidationExceptions;
+
+@Api(description = "Contains API operations for Joke model.")
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = "/api/joke")
 public class JokeController {
 
-    private JokeService jokeService;
+    private final JokeService jokeService;
 
-    @GetMapping
-    public ResponseEntity<?> getAll(){
-        List<JokeDTO> jokeDTOList = jokeService.findAllLatest();
-
-        if(CollectionUtils.isEmpty(jokeDTOList))
-            return new ResponseEntity<>("Joke list is empty!", HttpStatus.NOT_FOUND);
-
-        return new ResponseEntity<>(jokeDTOList, HttpStatus.OK);
-    }
-
+    @ApiOperation(value = "Retrieves selected Joke by it's given identifier.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "OK", response = JokeDTO.class),
+            @ApiResponse(code = 400, message = "Bad Request", response = void.class)
+    })
     @GetMapping("/{id}")
-    public ResponseEntity<?> getOneById(@PathVariable Integer id){
+    public ResponseEntity<?> getOneById(@PathVariable Long id){
         JokeDTO jokeDTO = jokeService.findOneById(id);
 
-        if(Objects.isNull(jokeDTO))
-            return new ResponseEntity<>("Selected Joke does not exists!", HttpStatus.NOT_FOUND);
+        if(Objects.isNull(jokeDTO)) throw new JokeNotFoundException();
 
-        return new ResponseEntity<>(jokeDTO, HttpStatus.OK);
+        return ResponseEntity.ok(jokeDTO);
     }
 
+    @ApiOperation(value = "Retrieves Joke list by random.")
+    @ApiResponse(code = 200, message = "OK", response = void.class)
+    @GetMapping("/random")
+    public ResponseEntity<?> getAllByRandom(){
+        List<JokeDTO> jokeDTOList = jokeService.findAllByRandom();
+
+        return ResponseEntity.ok(jokeDTOList);
+    }
+
+    @ApiOperation(value = "Retrieves Joke list by their given search params.")
+    @ApiResponse(code = 200, message = "OK", response = void.class)
     @PostMapping("/search")
-    public ResponseEntity<?> getAllByParam(@RequestBody CategorySearchDTO categorySearchDTO){
-        List<JokeDTO> jokeDTOList = jokeService.findAllByParam(categorySearchDTO);
+    public ResponseEntity<?> getAllBySearch(@RequestBody JokeSearchDTO jokeSearchDTO){
+        List<JokeDTO> jokeDTOList = jokeService.findAllByParam(jokeSearchDTO);
 
-        if(CollectionUtils.isEmpty(jokeDTOList))
-            return new ResponseEntity<>("Joke list is empty!", HttpStatus.NOT_FOUND);
-
-        return new ResponseEntity<>(jokeDTOList, HttpStatus.OK);
+        return ResponseEntity.ok(jokeDTOList);
     }
 
+    @ApiOperation(value = "Created a new Joke.",
+        notes = "If selected Joke Category title does not exists in database, server will create it.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "OK", response = JokeDTO.class),
+            @ApiResponse(code = 400, message = "Bad Request", response = void.class)
+    })
     @PostMapping
-    public ResponseEntity<?> save(@Valid @RequestBody JokeDTO jokeDTO, Errors errors){
-        if(errors.hasErrors()){
-            String error = "";
-            List<FieldError> errorsList = errors.getFieldErrors();
+    public ResponseEntity<?> save(@Valid @RequestBody JokeDTO jokeDTO, @ApiIgnore Errors errors){
+        if(errors.hasErrors())
+            return ResponseEntity.badRequest().body(handleValidationExceptions(errors));
 
-            for(int i = 0; i < errorsList.size(); i++){
-                String fieldError = errorsList.get(i).getDefaultMessage() + "\n";
-                error += fieldError;
-            }
+        JokeDTO result = jokeService.save(jokeDTO);
 
-            return new ResponseEntity<>(error, HttpStatus.NOT_ACCEPTABLE);
-        }
-
-        try{
-            jokeDTO = jokeService.save(jokeDTO);
-        }
-        catch(Exception e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
-        }
-
-        return new ResponseEntity<>(jokeDTO, HttpStatus.CREATED);
+        return ResponseEntity.ok(result);
     }
 
+    @ApiOperation(value = "Updates selected Joke by it's given identifier.",
+            notes = "If selected Joke Category title does not exists in database, server will create it.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "OK", response = JokeDTO.class),
+            @ApiResponse(code = 400, message = "Bad Request", response = void.class)
+    })
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateById(@PathVariable Integer id, @Valid @RequestBody JokeDTO updateDTO, Errors errors){
+    public ResponseEntity<?> updateById(@PathVariable Long id, @Valid @RequestBody JokeDTO updateDTO,
+                                        @ApiIgnore Errors errors){
         JokeDTO jokeDTO = jokeService.findOneById(id);
 
-        if(Objects.isNull(jokeDTO))
-            return new ResponseEntity<>("Selected Joke does not exists!", HttpStatus.NOT_FOUND);
+        if(Objects.isNull(jokeDTO)) throw new JokeNotFoundException();
 
-        if(errors.hasErrors()){
-            String error = "";
-            List<FieldError> errorsList = errors.getFieldErrors();
+        if(errors.hasErrors())
+            return ResponseEntity.badRequest().body(handleValidationExceptions(errors));
 
-            for(int i = 0; i < errorsList.size(); i++){
-                String fieldError = errorsList.get(i).getDefaultMessage() + "\n";
-                error += fieldError;
-            }
 
-            return new ResponseEntity<>(error, HttpStatus.NOT_ACCEPTABLE);
-        }
+        updateDTO.setId(id);
+        JokeDTO result = jokeService.save(updateDTO);
 
-        try{
-            updateDTO.setId(id);
-            jokeService.save(updateDTO);
-        }
-        catch(Exception e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
-        }
-
-        updateDTO = jokeService.findOneById(id);
-        return new ResponseEntity<>(updateDTO, HttpStatus.OK);
+        return ResponseEntity.ok(result);
     }
 
+    @ApiOperation(value = "Deleted selected Joke by it's given identifier.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "OK", response = JokeDTO.class),
+            @ApiResponse(code = 400, message = "Bad Request", response = void.class)
+    })
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteById(@PathVariable Integer id){
+    public ResponseEntity<?> deleteById(@PathVariable Long id){
         JokeDTO jokeDTO = jokeService.findOneById(id);
 
-        if(Objects.isNull(jokeDTO))
-            return new ResponseEntity<>("Selected Joke does not exists!", HttpStatus.NOT_FOUND);
+        if(Objects.isNull(jokeDTO)) throw new JokeNotFoundException();
 
-        try{
-            jokeService.deleteById(id);
-        }
-        catch(Exception e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
-        }
+        jokeService.deleteById(id);
 
-        return new ResponseEntity<>("The following" + " " + jokeDTO.getCategory() + " " + "joke was deleted!\n"
-                + jokeDTO.getDescription(), HttpStatus.OK
-        );
+        String name = jokeDTO.getCategoryTitle();
+
+        return ResponseEntity.ok("The" + " " + name + " #" + id + " " + "joke was deleted!");
     }
 }

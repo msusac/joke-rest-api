@@ -19,10 +19,10 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
-    private Integer id;
+    private Long id;
 
-    @Column(name = "name", unique = true, nullable = false)
-    private String name;
+    @Column(name = "title", unique = true, nullable = false)
+    private String title;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -33,6 +33,6 @@ public class Category {
     private LocalDateTime dateTimeCreated;
 
     @UpdateTimestamp
-    @Column(name = "date_time_updated", nullable = true, updatable = false)
+    @Column(name = "date_time_updated")
     private LocalDateTime dateTimeUpdated;
 }

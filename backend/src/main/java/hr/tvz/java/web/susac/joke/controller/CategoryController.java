@@ -1,144 +1,64 @@
 package hr.tvz.java.web.susac.joke.controller;
 
 import hr.tvz.java.web.susac.joke.dto.CategoryDTO;
+import hr.tvz.java.web.susac.joke.dto.CategorySearchDTO;
 import hr.tvz.java.web.susac.joke.dto.JokeDTO;
+import hr.tvz.java.web.susac.joke.exception.category.CategoryNotFoundException;
 import hr.tvz.java.web.susac.joke.service.CategoryService;
 import hr.tvz.java.web.susac.joke.service.JokeService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.CollectionUtils;
-import org.springframework.validation.Errors;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 
+@Api(description = "Contains API operations for Joke Category model.")
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = "/api/category")
 public class CategoryController {
 
-    private CategoryService categoryService;
-    private JokeService jokeService;
+    private final CategoryService categoryService;
 
+    private final JokeService jokeService;
+
+    @ApiOperation(value = "Retrieves Joke Category list.")
+    @ApiResponse(code = 200, message = "OK", response = void.class)
     @GetMapping
-    public ResponseEntity<?> getAll() {
-        List<CategoryDTO> categoryDTOList = categoryService.findAllNameAsc();
+    public ResponseEntity<?> getAll(){
+        List<CategoryDTO> categoryDTOList = categoryService.findAll();
 
-        if (CollectionUtils.isEmpty(categoryDTOList)) {
-            return new ResponseEntity<>("Joke Category list is empty!", HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(categoryDTOList, HttpStatus.OK);
+        return ResponseEntity.ok(categoryDTOList);
     }
 
+    @ApiOperation(value = "Retrieves selected Joke Category by it's given identifier, " +
+            "along with jokes that are associated with selected Joke Category.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "OK", response = JokeDTO.class),
+            @ApiResponse(code = 400, message = "Bad Request!", response = void.class)
+    })
     @GetMapping("/{id}")
-    public ResponseEntity<?> getOneById(@PathVariable Integer id){
+    public ResponseEntity<?> getOneById(@PathVariable Long id){
         CategoryDTO categoryDTO = categoryService.findOneById(id);
 
-        if(Objects.isNull(categoryDTO))
-            return new ResponseEntity<>("Selected Joke Category does not exists!", HttpStatus.NOT_FOUND);
+        if (Objects.isNull(categoryDTO)) throw new CategoryNotFoundException();
 
-        return new ResponseEntity<>(categoryDTO, HttpStatus.OK);
+        categoryDTO.setJokeDTOList(jokeService.findAllByCategory(id));
+
+        return ResponseEntity.ok(categoryDTO);
     }
 
-    @GetMapping("/{id}/details")
-    public ResponseEntity<?> getOneByIdDetails(@PathVariable Integer id){
-        CategoryDTO categoryDTO = categoryService.findOneById(id);
-        List<JokeDTO> jokeDTOList = jokeService.findAllByCategory(categoryDTO.getName());
+    @ApiOperation(value = "Retrieves Joke Category list by their given search params.")
+    @ApiResponse(code = 200, message = "OK", response = void.class)
+    @PostMapping("/search")
+    public ResponseEntity<?> getAllBySearch(@RequestBody CategorySearchDTO searchDTO){
+        List<CategoryDTO> categoryDTOList = categoryService.findAllByParam(searchDTO);
 
-        if (CollectionUtils.isEmpty(jokeDTOList)) {
-            return new ResponseEntity<>("Selected Joke Category list is empty!", HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(jokeDTOList, HttpStatus.OK);
-    }
-
-    @PostMapping
-    public ResponseEntity<?> save(@Valid @RequestBody CategoryDTO categoryDTO, Errors errors){
-        if(errors.hasErrors()){
-            String error = "";
-            List<FieldError> errorsList = errors.getFieldErrors();
-
-            for(int i = 0; i < errorsList.size(); i++){
-                String fieldError = errorsList.get(i).getDefaultMessage() + "\n";
-                error += fieldError;
-            }
-
-            return new ResponseEntity<>(error, HttpStatus.NOT_ACCEPTABLE);
-        }
-
-        if(!Objects.isNull(categoryService.findOneByName(categoryDTO.getName()))){
-            return new ResponseEntity<>("Joke Category" + " " + categoryDTO.getName() + " " + "already exists!",
-                    HttpStatus.NOT_ACCEPTABLE);
-        }
-
-        try{
-            categoryDTO = categoryService.save(categoryDTO);
-        }
-        catch(Exception e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
-        }
-
-        categoryDTO = categoryService.findOneByName(categoryDTO.getName());
-        return new ResponseEntity<>(categoryDTO, HttpStatus.CREATED);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateById(@PathVariable Integer id, @Valid @RequestBody CategoryDTO updateDTO, Errors errors){
-        CategoryDTO categoryDTO = categoryService.findOneById(id);
-
-        if(Objects.isNull(categoryDTO))
-            return new ResponseEntity<>("Selected Joke Category does not exists!", HttpStatus.NOT_FOUND);
-
-        if(errors.hasErrors()){
-            String error = "";
-            List<FieldError> errorsList = errors.getFieldErrors();
-
-            for(int i = 0; i < errorsList.size(); i++){
-                String fieldError = errorsList.get(i).getDefaultMessage() + "\n";
-                error += fieldError;
-            }
-
-            return new ResponseEntity<>(error, HttpStatus.NOT_ACCEPTABLE);
-        }
-
-        if(!Objects.isNull(categoryService.findOneByName(updateDTO.getName())) &&
-                (!updateDTO.getName().equals(categoryDTO.getName())))
-            return new ResponseEntity<>("Selected Joke Category name" + " " + updateDTO.getName() + " " + "already taken!",
-                    HttpStatus.NOT_ACCEPTABLE);
-
-        try{
-            updateDTO.setId(id);
-            categoryService.save(updateDTO);
-        }
-        catch(Exception e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
-        }
-
-        updateDTO = categoryService.findOneById(id);
-        return new ResponseEntity<>(updateDTO, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteById(@PathVariable Integer id){
-        CategoryDTO categoryDTO = categoryService.findOneById(id);
-
-        if(Objects.isNull(categoryDTO))
-            return new ResponseEntity<>("Selected Joke Category does not exists!", HttpStatus.NOT_FOUND);
-
-        try{
-            categoryService.deleteById(id);
-        }
-        catch(Exception e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
-        }
-
-        return new ResponseEntity<>("Joke Category" + " " + categoryDTO.getName() + " " + "was deleted!",
-                HttpStatus.OK
-        );
+        return ResponseEntity.ok(categoryDTOList);
     }
 }

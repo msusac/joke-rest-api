@@ -17,7 +17,7 @@ public class Joke {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
-    private Integer id;
+    private Long id;
 
     @Column(name = "description", unique = true, nullable = false)
     private String description;
@@ -32,6 +32,6 @@ public class Joke {
     private LocalDateTime dateTimeCreated;
 
     @UpdateTimestamp
-    @Column(name = "date_time_updated", nullable = true, updatable = false)
+    @Column(name = "date_time_updated")
     private LocalDateTime dateTimeUpdated;
 }

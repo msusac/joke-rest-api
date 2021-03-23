@@ -1,8 +1,7 @@
 package hr.tvz.java.web.susac.joke.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hr.tvz.java.web.susac.joke.dto.CategoryDTO;
-import hr.tvz.java.web.susac.joke.service.CategoryService;
+import hr.tvz.java.web.susac.joke.dto.CategorySearchDTO;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -11,203 +10,75 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.transaction.Transactional;
 
+import static hr.tvz.java.web.susac.joke.UtilStatic.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestPropertySource(locations = "classpath:application-test.yml")
 public class CategoryControllerTests {
 
     @Autowired
-    private CategoryService categoryService;
-
-    @Autowired
-    private ObjectMapper mapper;
+    private ObjectMapper objectMapper;
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
     @Order(1)
-    public void getAll() throws Exception{
+    public void getAll() throws Exception {
         this.mockMvc.perform(
-                get("/api/category")
-                .contentType(MediaType.APPLICATION_JSON)
+                get(URL_API_CATEGORY)
+                    .contentType(MediaType.APPLICATION_JSON)
         )
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(2)));
+                .andExpect(jsonPath("$", hasSize(4)));
     }
 
     @Test
     @Order(2)
-    public void getOneById() throws Exception{
+    public void getAllBySearch() throws Exception {
+        CategorySearchDTO searchDTO = createCategorySearchDTO();
+
         this.mockMvc.perform(
-                get("/api/category/1")
+                post(URL_API_CATEGORY + "/search")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(searchDTO))
+                        .accept(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    @Order(3)
+    public void getOneById() throws Exception {
+        this.mockMvc.perform(
+                get(URL_API_CATEGORY + "/" + LONG_ID_ONE)
+                    .contentType(MediaType.APPLICATION_JSON)
         )
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
-    @Order(3)
-    public void getOneById_NotFound() throws Exception{
-        this.mockMvc.perform(
-                get("/api/category/11")
-                        .contentType(MediaType.APPLICATION_JSON)
-        )
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
     @Order(4)
-    public void getOneByIdDetails() throws Exception{
+    public void getOneById_BadRequest_NotFound() throws Exception {
         this.mockMvc.perform(
-                get("/api/category/1/details")
+                get(URL_API_CATEGORY + "/" + LONG_ID_SEVEN)
                         .contentType(MediaType.APPLICATION_JSON)
         )
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(2)));
-    }
-
-    @Test
-    @Order(5)
-    public void save() throws Exception{
-        CategoryDTO categoryDTO = new CategoryDTO();
-        categoryDTO.setName("My Cake");
-
-        this.mockMvc.perform(
-                post("/api/category")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(categoryDTO))
-                        .accept(MediaType.APPLICATION_JSON)
-        )
-                .andExpect(status().isCreated());
-
-        categoryDTO = categoryService.findOneByName("My Cake");
-
-        assertNotNull(categoryDTO);
-        assertEquals("My Cake", categoryDTO.getName());
-    }
-
-    @Test
-    @Order(6)
-    public void save_FailedValidation() throws Exception{
-        CategoryDTO categoryDTO = new CategoryDTO();
-        categoryDTO.setName("My Cake 342");
-
-        this.mockMvc.perform(
-                post("/api/category")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(categoryDTO))
-                        .accept(MediaType.APPLICATION_JSON)
-        )
-                .andExpect(status().isNotAcceptable());
-    }
-
-    @Test
-    @Order(7)
-    public void save_ExistingCategory() throws Exception{
-        CategoryDTO categoryDTO = new CategoryDTO();
-        categoryDTO.setName("Programming");
-
-        this.mockMvc.perform(
-                post("/api/category")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(categoryDTO))
-                        .accept(MediaType.APPLICATION_JSON)
-        )
-                .andExpect(status().isNotAcceptable());
-    }
-
-    @Test
-    @Order(8)
-    public void update() throws Exception{
-        CategoryDTO categoryDTO = new CategoryDTO();
-        categoryDTO.setName("Chucky Norris");
-
-        this.mockMvc.perform(
-                put("/api/category/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(categoryDTO))
-                        .accept(MediaType.APPLICATION_JSON)
-        )
-                .andExpect(status().isOk());
-
-        categoryDTO = categoryService.findOneByName("Chucky Norris");
-
-        assertNotNull(categoryDTO);
-        assertEquals(1, categoryDTO.getId());
-        assertEquals("Chucky Norris", categoryDTO.getName());
-    }
-
-    @Test
-    @Order(9)
-    public void update_FailedValidation() throws Exception{
-        CategoryDTO categoryDTO = new CategoryDTO();
-        categoryDTO.setName("Chucky Norris 231");
-
-        this.mockMvc.perform(
-                put("/api/category/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(categoryDTO))
-                        .accept(MediaType.APPLICATION_JSON)
-        )
-                .andExpect(status().isNotAcceptable());
-    }
-
-    @Test
-    @Order(10)
-    public void update_ExistingCategory() throws Exception{
-        CategoryDTO categoryDTO = new CategoryDTO();
-        categoryDTO.setName("Programming");
-
-        this.mockMvc.perform(
-                put("/api/category/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(categoryDTO))
-                        .accept(MediaType.APPLICATION_JSON)
-        )
-                .andExpect(status().isNotAcceptable());
-    }
-
-    @Test
-    @Order(11)
-    public void update_NotFound() throws Exception{
-        CategoryDTO categoryDTO = new CategoryDTO();
-        categoryDTO.setName("Chucky Norris");
-
-        this.mockMvc.perform(
-                put("/api/category/9")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(categoryDTO))
-                        .accept(MediaType.APPLICATION_JSON)
-        )
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @Order(12)
-    public void deleteById() throws Exception{
-        this.mockMvc.perform(
-                delete("/api/category/1")
-        )
-                .andExpect(status().isOk());
-
-        this.mockMvc.perform(
-                get("/api/category/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-        )
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 }

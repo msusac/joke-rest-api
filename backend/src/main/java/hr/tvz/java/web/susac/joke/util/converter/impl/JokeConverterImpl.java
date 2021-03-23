@@ -17,29 +17,23 @@ import java.util.Objects;
 public class JokeConverterImpl implements ConverterUtil<Joke, JokeDTO> {
 
     private final JokeRepository jokeRepository;
-    private final ModelMapper mapper;
 
-    @Override
-    public JokeDTO convertToDTO(Joke entity) {
-        JokeDTO jokeDTO = mapper.map(entity, JokeDTO.class);
-        jokeDTO.setCategory(entity.getCategory().getName());
-        jokeDTO.setDateCreated(entity.getDateTimeCreated().toLocalDate());
+    private final ModelMapper modelMapper;
 
-        if(!Objects.isNull(entity.getDateTimeUpdated())) {
-            jokeDTO.setDateUpdated(entity.getDateTimeUpdated().toLocalDate());
-        }
+    public JokeDTO convertToDTO(Joke joke){
+        JokeDTO jokeDTO = modelMapper.map(joke, JokeDTO.class);
+        jokeDTO.setCategoryTitle(joke.getCategory().getTitle());
 
         return jokeDTO;
     }
 
-    @Override
-    public Joke convertToEntity(JokeDTO dto) {
-        Joke joke = mapper.map(dto, Joke.class);
+    public Joke convertToEntity(JokeDTO jokeDTO){
+        Joke joke = modelMapper.map(jokeDTO, Joke.class);
 
         if(!Objects.isNull(joke.getId())){
-            Joke existingJoke = jokeRepository.findOneById(joke.getId());
-            joke.setCategory(existingJoke.getCategory());
-            joke.setDateTimeCreated(existingJoke.getDateTimeCreated());
+            Joke jokeOld = jokeRepository.findOneById(joke.getId()).orElse(null);
+            joke.setCategory(jokeOld.getCategory());
+            joke.setDateTimeCreated(jokeOld.getDateTimeCreated());
         }
 
         return joke;

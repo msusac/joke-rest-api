@@ -1,7 +1,10 @@
 package hr.tvz.java.web.susac.joke.service.impl;
 
 import hr.tvz.java.web.susac.joke.dto.CategoryDTO;
+import hr.tvz.java.web.susac.joke.dto.CategorySearchDTO;
+import hr.tvz.java.web.susac.joke.dto.JokeSearchDTO;
 import hr.tvz.java.web.susac.joke.model.Category;
+import hr.tvz.java.web.susac.joke.model.Joke;
 import hr.tvz.java.web.susac.joke.repository.CategoryRepository;
 import hr.tvz.java.web.susac.joke.service.CategoryService;
 import hr.tvz.java.web.susac.joke.util.converter.ConverterUtil;
@@ -10,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,45 +21,29 @@ import java.util.stream.Collectors;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final ConverterUtil<Category, CategoryDTO> converter;
+
+    private final ConverterUtil<Category, CategoryDTO> converterUtil;
 
     @Override
-    public CategoryDTO findOneById(Integer id) {
-        Category category = categoryRepository.findOneById(id);
+    public List<CategoryDTO> findAll() {
+        List<Category> categoryList = categoryRepository.findAll();
 
-        if(Objects.isNull(category)) return null;
-
-        return converter.convertToDTO(category);
-    }
-
-    @Override
-    public CategoryDTO findOneByName(String name) {
-        Category category = categoryRepository.findOneByName(name);
-
-        if(Objects.isNull(category)) return null;
-
-        return converter.convertToDTO(category);
-    }
-
-    @Override
-    public List<CategoryDTO> findAllNameAsc() {
-        List<Category> categoryList = categoryRepository.findAllNameAsc();
-
-        return categoryList.stream().map(converter::convertToDTO)
+        return categoryList.stream().map(converterUtil::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public CategoryDTO save(CategoryDTO categoryDTO) {
-        Category category = converter.convertToEntity(categoryDTO);
+    public List<CategoryDTO> findAllByParam(CategorySearchDTO searchDTO) {
+        List<Category> categoryList = categoryRepository.findAllByParam(searchDTO.getTitle());
 
-        categoryRepository.save(category);
-
-        return converter.convertToDTO(category);
+        return categoryList.stream().map(converterUtil::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public void deleteById(Integer id) {
-        categoryRepository.deleteById(id);
+    public CategoryDTO findOneById(Long id) {
+        Category category = categoryRepository.findOneById(id).orElse(null);
+
+        return category != null ? converterUtil.convertToDTO(category): null;
     }
 }

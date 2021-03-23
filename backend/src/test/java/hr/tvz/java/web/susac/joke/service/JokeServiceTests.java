@@ -1,114 +1,89 @@
 package hr.tvz.java.web.susac.joke.service;
 
 import hr.tvz.java.web.susac.joke.dto.JokeDTO;
-import hr.tvz.java.web.susac.joke.dto.CategorySearchDTO;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 
 import javax.transaction.Transactional;
 import java.util.List;
 
+import static hr.tvz.java.web.susac.joke.UtilStatic.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestPropertySource(locations = "classpath:application-test.yml")
 public class JokeServiceTests {
-    
+
     @Autowired
     private JokeService jokeService;
 
     @Test
     @Order(1)
-    public void findOneById(){
-        JokeDTO jokeDTO = jokeService.findOneById(1);
-
+    public void findOneById() {
+        JokeDTO jokeDTO = jokeService.findOneById(LONG_ID_ONE);
         assertNotNull(jokeDTO);
-        assertEquals("Chuck Norris", jokeDTO.getCategory());
+        assertEquals(STRING_CHUCK_NORRIS, jokeDTO.getCategoryTitle());
     }
 
     @Test
     @Order(2)
-    public void findAllLatest(){
-        List<JokeDTO> jokeList = jokeService.findAllLatest();
-
-        assertNotNull(jokeList);
-        assertEquals(5, jokeList.size());
-        assertEquals("Programming", jokeList.get(0).getCategory());
+    public void findAllByCategory(){
+        List<JokeDTO> jokeDTOList = jokeService.findAllByCategory(LONG_ID_ONE);
+        assertEquals(3, jokeDTOList.size());
     }
 
     @Test
     @Order(3)
-    public void findAllByCategory(){
-        List<JokeDTO> jokeList = jokeService.findAllByCategory("Chuck Norris");
-
-        assertNotNull(jokeList);
-        assertEquals(2, jokeList.size());
-        assertEquals("Chuck Norris", jokeList.get(0).getCategory());
+    public void findAllByParam(){
+        List<JokeDTO> jokeDTOList = jokeService.findAllByParam(createJokeSearchDTO());
+        assertEquals(2, jokeDTOList.size());
     }
 
     @Test
     @Order(4)
-    public void findAllByParam(){
-        CategorySearchDTO categorySearchDTO = new CategorySearchDTO();
-        categorySearchDTO.setName("Pro");
-
-        List<JokeDTO> jokeList = jokeService.findAllByParam(categorySearchDTO);
-
-        assertNotNull(jokeList);
-        assertEquals(3, jokeList.size());
-        assertEquals("Programming", jokeList.get(0).getCategory());
+    public void findAllByParam_withDate(){
+        List<JokeDTO> jokeDTOList = jokeService.findAllByParam(createSearchDTO_withDate());
+        assertEquals(2, jokeDTOList.size());
     }
 
     @Test
     @Order(5)
-    public void save_new(){
-        JokeDTO jokeDTO = new JokeDTO();
-        jokeDTO.setCategory("New Joke");
-        jokeDTO.setDescription("C++");
-
-        jokeService.save(jokeDTO);
-
-        List<JokeDTO> jokeList = jokeService.findAllByCategory("New Joke");
-
-        assertNotNull(jokeList);
-        assertEquals(1, jokeList.size());
-        assertEquals("C++", jokeList.get(0).getDescription());
+    public void findAllByRandom(){
+        List<JokeDTO>jokeDTOList = jokeService.findAllByRandom();
+        assertEquals(5, jokeDTOList.size());
     }
 
     @Test
-    @Order(7)
-    public void save_existing(){
-        JokeDTO jokeDTO = new JokeDTO();
-        jokeDTO.setCategory("Programming");
-        jokeDTO.setDescription("C++");
+    @Order(5)
+    public void save_withExistingCategory(){
+        jokeService.save(createJokeDTO_withExistingCategory());
 
-        jokeService.save(jokeDTO);
+        List<JokeDTO> jokeDTOList = jokeService.findAllByParam(createJokeSearchDTO());
+        assertEquals(3, jokeDTOList.size());
+    }
 
-        List<JokeDTO> jokeList = jokeService.findAllByCategory("Programming");
+    @Test
+    @Order(6)
+    public void save_withNewCategory(){
+        jokeService.save(createJokeDTO_withNewCategory());
 
-        assertNotNull(jokeList);
-        assertEquals(4, jokeList.size());
-        assertEquals("C++", jokeList.get(0).getDescription());
+        List<JokeDTO> jokeDTOList = jokeService.findAllByParam(createSearchDTO_withNameNewJoke());
+        assertEquals(1, jokeDTOList.size());
     }
 
     @Test
     @Order(7)
     public void deleteById(){
-        JokeDTO jokeDTO = jokeService.findOneById(4);
+        jokeService.deleteById(LONG_ID_ONE);
 
-        jokeService.deleteById(jokeDTO.getId());
-
-        List<JokeDTO> jokeList = jokeService.findAllByCategory("Programming");
-
-        jokeDTO = jokeService.findOneById(4);
-
+        JokeDTO jokeDTO = jokeService.findOneById(LONG_ID_ONE);
         assertNull(jokeDTO);
-        assertNotNull(jokeList);
-        assertEquals(2, jokeList.size());
     }
 }

@@ -1,19 +1,21 @@
 package hr.tvz.java.web.susac.joke.service;
 
 import hr.tvz.java.web.susac.joke.dto.JokeDTO;
-import hr.tvz.java.web.susac.joke.dto.CategorySearchDTO;
+import hr.tvz.java.web.susac.joke.dto.JokeSearchDTO;
 
 import java.util.List;
 
 public interface JokeService {
 
-    JokeDTO findOneById(Integer id);
+    JokeDTO findOneById(Long id);
 
-    List<JokeDTO> findAllByCategory(String name);
-    List<JokeDTO> findAllByParam(CategorySearchDTO categorySearchDTO);
-    List<JokeDTO> findAllLatest();
+    List<JokeDTO> findAllByCategory(Long id);
+
+    List<JokeDTO> findAllByParam(JokeSearchDTO searchDTO);
+
+    List<JokeDTO> findAllByRandom();
 
     JokeDTO save(JokeDTO jokeDTO);
 
-    void deleteById(Integer id);
+    void deleteById(Long id);
 }
